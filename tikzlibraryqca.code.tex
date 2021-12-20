@@ -1,0 +1,268 @@
+\ProvidesFileRCS{tikzlibraryddd.code.tex}
+
+%
+% 1. color definitions
+%
+\pgfutil@colorlet{tile_color_1}{lightgray!20}
+\pgfutil@colorlet{tile_color_2}{lightgray!50}
+\pgfutil@colorlet{tile_color_3}{lightgray}
+\pgfutil@colorlet{tile_color_4}{gray}
+\pgfutil@definecolor{cell_color_1}{HTML}{86E291}
+\pgfutil@definecolor{cell_color_2}{HTML}{FFA5FA}
+\pgfutil@definecolor{cell_color_3}{HTML}{00C8BC}
+\pgfutil@definecolor{cell_color_4}{HTML}{F2F2F2}
+\pgfutil@definecolor{input_color}{HTML}{008DC8}
+\pgfutil@definecolor{output_color}{HTML}{E28686}
+\pgfutil@definecolor{fixed_color}{HTML}{000000}
+%
+%
+% 2. clocking schemes
+%
+\usetikzlibrary{math}
+\tikzmath{
+    function use_val(\x,\y){
+        return (mod(\y,2)!=0) ? ((mod(\y+1,4)!=0)?(1+mod(\x+1,4)):(1+mod(\x+3,4))):((mod(\y,4)==0)?(4-mod(\x+3,4)):(4-mod(\x+1,4)));
+    };
+    %
+    function use(\row, \col) {
+        \row = \row-1;
+        \col = \col-1;
+        int \i, \j, \c; 
+        for \i in {0,...,\row}{
+            for \j in {0,...,\col}{
+                \c = use_val(\j, \i);
+                { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
+            };
+        };
+    };
+}
+%
+%
+% 3. cells
+%
+% normal pr cell
+%
+\pgfdeclareshape{_cell}{%
+    \inheritsavedanchors[from=rectangle]%
+    \inheritanchorborder[from=rectangle]%
+    \inheritanchor[from=rectangle]{north}%
+    \inheritanchor[from=rectangle]{north west}%
+    \inheritanchor[from=rectangle]{north east}%
+    \inheritanchor[from=rectangle]{center}%
+    \inheritanchor[from=rectangle]{west}%
+    \inheritanchor[from=rectangle]{east}%
+    \inheritanchor[from=rectangle]{mid}%
+    \inheritanchor[from=rectangle]{mid west}%
+    \inheritanchor[from=rectangle]{mid east}%
+    \inheritanchor[from=rectangle]{base}%
+    \inheritanchor[from=rectangle]{base west}%
+    \inheritanchor[from=rectangle]{base east}%
+    \inheritanchor[from=rectangle]{south}%
+    \inheritanchor[from=rectangle]{south west}%
+    \inheritanchor[from=rectangle]{south east}%
+    \backgroundpath{%
+        %draw the outer rectangle border with rounded corners
+        \pgfsetcornersarced{\pgfpointscale{0.09}{\pgfpoint{\pgfkeysvalueof{/pgf/minimum width}}{\pgfkeysvalueof{/pgf/minimum height}}}}%
+        \pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}%
+        \pgfgetlastxy{\xb}{\yb}%
+        \pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}%
+        \pgfgetlastxy{\xa}{\ya}%
+        \pgfpathrectanglecorners{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}%
+        %draw the inner circles
+        \pgfmathsetlength{\pgf@xa}{\pgfkeysvalueof{/pgf/minimum width}}%
+        \pgf@xa=0.145\pgf@xa%
+        {\pgfpathcircle{\pgfpointlineattime{0.25}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}}%
+        {\pgfpathcircle{\pgfpointlineattime{0.75}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}}%
+        {\pgfpathcircle{\pgfpointlineattime{0.25}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}{\pgf@xa}}%
+        {\pgfpathcircle{\pgfpointlineattime{0.75}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}{\pgf@xa}}%
+    }%
+}%
+%
+% via
+%
+\pgfdeclareshape{_via}{%
+    \inheritsavedanchors[from=rectangle]%
+    \inheritanchorborder[from=rectangle]%
+    \inheritanchor[from=rectangle]{north}%
+    \inheritanchor[from=rectangle]{north west}%
+    \inheritanchor[from=rectangle]{north east}%
+    \inheritanchor[from=rectangle]{center}%
+    \inheritanchor[from=rectangle]{west}%
+    \inheritanchor[from=rectangle]{east}%
+    \inheritanchor[from=rectangle]{mid}%
+    \inheritanchor[from=rectangle]{mid west}%
+    \inheritanchor[from=rectangle]{mid east}%
+    \inheritanchor[from=rectangle]{base}%
+    \inheritanchor[from=rectangle]{base west}%
+    \inheritanchor[from=rectangle]{base east}%
+    \inheritanchor[from=rectangle]{south}%
+    \inheritanchor[from=rectangle]{south west}%
+    \inheritanchor[from=rectangle]{south east}%
+    \backgroundpath{%
+        \pgfsetcornersarced{\pgfpointscale{0.09}{\pgfpoint{\pgfkeysvalueof{/pgf/minimum width}}{\pgfkeysvalueof{/pgf/minimum height}}}}%
+        \pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}%
+        \pgfgetlastxy{\xb}{\yb}%
+        \pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}%
+        \pgfgetlastxy{\xa}{\ya}%
+        \pgfpathrectanglecorners{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}%
+        % 
+        \pgfmathsetlength{\pgf@xa}{\pgfkeysvalueof{/pgf/minimum width}}%
+        \pgf@xa=0.325\pgf@xa%
+        \pgfpathcircle{\pgfpointlineattime{0.5}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}%
+    }%
+}%
+%
+% cross
+%
+\pgfdeclareshape{_cross}{%
+    \inheritsavedanchors[from=rectangle]%
+    \inheritanchorborder[from=rectangle]%
+    \inheritanchor[from=rectangle]{north}%
+    \inheritanchor[from=rectangle]{north west}%
+    \inheritanchor[from=rectangle]{north east}%
+    \inheritanchor[from=rectangle]{center}%
+    \inheritanchor[from=rectangle]{west}%
+    \inheritanchor[from=rectangle]{east}%
+    \inheritanchor[from=rectangle]{mid}%
+    \inheritanchor[from=rectangle]{mid west}%
+    \inheritanchor[from=rectangle]{mid east}%
+    \inheritanchor[from=rectangle]{base}%
+    \inheritanchor[from=rectangle]{base west}%
+    \inheritanchor[from=rectangle]{base east}%
+    \inheritanchor[from=rectangle]{south}%
+    \inheritanchor[from=rectangle]{south west}%
+    \inheritanchor[from=rectangle]{south east}%
+    \backgroundpath{%
+        \pgfsetcornersarced{\pgfpointscale{0.09}{\pgfpoint{\pgfkeysvalueof{/pgf/minimum width}}{\pgfkeysvalueof{/pgf/minimum height}}}}%
+        \pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}%
+        \pgfgetlastxy{\xb}{\yb}%
+        \pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}%
+        \pgfgetlastxy{\xa}{\ya}%
+        \pgfpathrectanglecorners{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}%
+        % 
+        \pgfpathmoveto{\pgfpointlineattime{0.2}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}%
+        \pgfpathlineto{\pgfpointlineattime{0.8}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}%
+        \pgfpathmoveto{\pgfpointlineattime{0.2}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}%
+        \pgfpathlineto{\pgfpointlineattime{0.8}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}%
+    }%
+}%
+%
+% fixed 
+%
+\tikzset{pola/.store in=\mypola}
+%
+\pgfdeclareshape{_fixed}{%
+    \inheritsavedanchors[from=rectangle]%
+    \inheritanchorborder[from=rectangle]%
+    \inheritanchor[from=rectangle]{north}%
+    \inheritanchor[from=rectangle]{north west}%
+    \inheritanchor[from=rectangle]{north east}%
+    \inheritanchor[from=rectangle]{center}%
+    \inheritanchor[from=rectangle]{west}%
+    \inheritanchor[from=rectangle]{east}%
+    \inheritanchor[from=rectangle]{mid}%
+    \inheritanchor[from=rectangle]{mid west}%
+    \inheritanchor[from=rectangle]{mid east}%
+    \inheritanchor[from=rectangle]{base}%
+    \inheritanchor[from=rectangle]{base west}%
+    \inheritanchor[from=rectangle]{base east}%
+    \inheritanchor[from=rectangle]{south}%
+    \inheritanchor[from=rectangle]{south west}%
+    \inheritanchor[from=rectangle]{south east}%
+    \backgroundpath{%
+        %draw the outer rectangle border with rounded corners
+        \pgfsetcornersarced{\pgfpointscale{0.09}{\pgfpoint{\pgfkeysvalueof{/pgf/minimum width}}{\pgfkeysvalueof{/pgf/minimum height}}}}%
+        \pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}%
+        \pgfgetlastxy{\xb}{\yb}%
+        \pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}%
+        \pgfgetlastxy{\xa}{\ya}%
+        \pgfpathrectanglecorners{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}%
+        \pgfsetfillcolor{fixed_color}
+        \pgfusepath{fill}
+        %draw the inner circles
+        \pgfmathsetlength{\pgf@xa}{\pgfkeysvalueof{/pgf/minimum width}}%
+        \pgf@xa=0.145\pgf@xa%
+        \ifnum\mypola=1\relax%
+            {\pgfpathcircle{\pgfpointlineattime{0.25}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}}%
+            {\pgfpathcircle{\pgfpointlineattime{0.75}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}}%
+            \pgfsetfillcolor{white}
+            \pgfusepath{fill}%
+        \else%
+            {\pgfpathcircle{\pgfpointlineattime{0.25}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}{\pgf@xa}}%
+            {\pgfpathcircle{\pgfpointlineattime{0.75}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}{\pgf@xa}}%
+            \pgfsetfillcolor{white}
+            \pgfusepath{fill}%
+        \fi%
+    }%
+}%
+%
+%
+% 4. styles
+%
+% library global options
+\tikzset{ 
+    base size/.initial=5cm, 
+    csfunc/.initial=use,
+}
+%
+% clocking scheme setup code
+\tikzset{
+    setup grid/.style args={#1 rows and #2 cols with size #3 of #4}{
+        base size=#3,
+        /utils/exec={\tikzset{base size/.get=\bsize}},
+        every node/.style={minimum size=\bsize},
+        x=\bsize,
+        y=\bsize,
+        csfunc=#4,
+        /utils/exec={\tikzset{csfunc/.get=\csf},\pgfmathparse{\csf(#1,#2)}},
+    }
+}
+%
+% cell styles
+\tikzset{
+    cell/.style={
+        shape=_cell, 
+        draw, 
+        minimum size=0.18*\bsize,
+    },
+    via/.style={
+        shape=_via,
+        draw,
+        minimum size=0.18*\bsize,
+    },
+    cross/.style={
+        shape=_cross,
+        draw,
+        minimum size=0.18*\bsize,
+    },
+    input/.style={
+        cell,
+        fill=input_color,
+    },
+    output/.style={
+        cell,
+        fill=output_color,
+    },
+    fixed/.style={
+        shape=_fixed,
+        minimum size=0.18*\bsize,
+        pola=#1,
+    },
+}
+%
+% tile initialization code
+\tikzset{
+    in tile/.style args={#1 #2}{
+        x=\bsize/5,
+        y=\bsize/5,
+        xshift={(#1-0.4)*\bsize},
+        yshift={(#2-0.4)*\bsize},
+        /utils/exec={
+            \pgfmathparse{int(\csf_val(#1,#2))},
+            \edef\cscolor{cell_color_\pgfmathresult},
+        },
+        every node/.append style={
+            fill=\cscolor,
+        },
+    } 
+}
