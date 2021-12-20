@@ -1,12 +1,14 @@
 \ProvidesFileRCS{tikzlibraryddd.code.tex}
 
-%
 % 1. color definitions
 %
+%clocking grid color scheme
 \pgfutil@colorlet{tile_color_1}{lightgray!20}
 \pgfutil@colorlet{tile_color_2}{lightgray!50}
 \pgfutil@colorlet{tile_color_3}{lightgray}
 \pgfutil@colorlet{tile_color_4}{gray}
+% cell color scheme 
+% from fiction (default)
 \pgfutil@definecolor{cell_color_1}{HTML}{86E291}
 \pgfutil@definecolor{cell_color_2}{HTML}{FFA5FA}
 \pgfutil@definecolor{cell_color_3}{HTML}{00C8BC}
@@ -14,29 +16,102 @@
 \pgfutil@definecolor{input_color}{HTML}{008DC8}
 \pgfutil@definecolor{output_color}{HTML}{E28686}
 \pgfutil@definecolor{fixed_color}{HTML}{000000}
-%
+% from Torres 
+% \pgfutil@definecolor{cell_color_1}{HTML}{008000}
+% \pgfutil@definecolor{cell_color_2}{HTML}{800080}
+% \pgfutil@definecolor{cell_color_3}{HTML}{008080}
+% \pgfutil@definecolor{cell_color_4}{HTML}{F2F2F2}
+% \pgfutil@definecolor{input_color}{HTML}{3663B2}
+% \pgfutil@definecolor{output_color}{HTML}{D47000}
+% \pgfutil@definecolor{fixed_color}{HTML}{000000}
+% colorful
+% \pgfutil@definecolor{cell_color_1}{RGB}{68, 189, 50}
+% \pgfutil@definecolor{cell_color_2}{RGB}{140, 122, 230}
+% \pgfutil@definecolor{cell_color_3}{RGB}{0, 151, 230}
+% \pgfutil@definecolor{cell_color_4}{RGB}{192,192,192}
+% \pgfutil@definecolor{input_color}{RGB}{39, 60, 117}
+% \pgfutil@definecolor{output_color}{RGB}{255,159,67}
+% \pgfutil@definecolor{fixed_color}{RGB}{20,20,20}
+% dark color
+% \pgfutil@definecolor{cell_color_1}{RGB}{0,150,136}
+% \pgfutil@definecolor{cell_color_2}{RGB}{123,104,238}
+% \pgfutil@definecolor{cell_color_3}{RGB}{135,206,250}
+% \pgfutil@definecolor{cell_color_4}{RGB}{128,128,128}
+% \pgfutil@definecolor{input_color}{RGB}{65,105,225}
+% \pgfutil@definecolor{output_color}{RGB}{255,165,0}
+% \pgfutil@definecolor{fixed_color}{RGB}{32,32,32}
+% light color
+% \pgfutil@definecolor{cell_color_1}{RGB}{153,204,51}
+% \pgfutil@definecolor{cell_color_2}{RGB}{204,204,255}
+% \pgfutil@definecolor{cell_color_3}{RGB}{122,224,255}
+% \pgfutil@definecolor{cell_color_4}{RGB}{204,204,204}
+% \pgfutil@definecolor{input_color}{RGB}{153,204,255}
+% \pgfutil@definecolor{output_color}{RGB}{255,204,153}
+% \pgfutil@definecolor{fixed_color}{RGB}{110,110,110}
+% gray color
+% \pgfutil@definecolor{cell_color_1}{RGB}{89,89,91}
+% \pgfutil@definecolor{cell_color_2}{RGB}{129,130,132}
+% \pgfutil@definecolor{cell_color_3}{RGB}{210,210,212}
+% \pgfutil@definecolor{cell_color_4}{RGB}{168,169,173}
+% \pgfutil@definecolor{input_color}{RGB}{230,230,230}
+% \pgfutil@definecolor{output_color}{RGB}{40,40,40}
+% \pgfutil@definecolor{fixed_color}{HTML}{000000}
 %
 % 2. clocking schemes
 %
 \usetikzlibrary{math}
 \tikzmath{
-    function use_val(\x,\y){
+    %USE Clocking Scheme
+    function USE_val(\x,\y){
         return (mod(\y,2)!=0) ? ((mod(\y+1,4)!=0)?(1+mod(\x+1,4)):(1+mod(\x+3,4))):((mod(\y,4)==0)?(4-mod(\x+3,4)):(4-mod(\x+1,4)));
     };
     %
-    function use(\row, \col) {
+    function USE(\row, \col) {
         \row = \row-1;
         \col = \col-1;
         int \i, \j, \c; 
         for \i in {0,...,\row}{
             for \j in {0,...,\col}{
-                \c = use_val(\j, \i);
+                \c = USE_val(\j, \i);
+                { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
+            };
+        };
+    };
+    %TDD Clocking Scheme
+    function TDD_val(\x,\y){
+        return (mod(\y, 2)!=0) ? ((mod(\y+1, 4)!=0)?(1+mod(\x+1, 4)):(1+mod(\x+3, 4))):((mod(\y, 4)==0)?(1+mod(\x, 4)):(1+mod(\x+2, 4)));
+    };
+    %
+    function TDD(\row, \col) {
+        \row = \row-1;
+        \col = \col-1;
+        int \i, \j, \c; 
+        for \i in {0,...,\row}{
+            for \j in {0,...,\col}{
+                \c = TDD_val(\j, \i);
+                { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
+            };
+        };
+    };
+    %RES Clocking Scheme
+    function RES_val(\x,\y){
+        return (mod(\y,2)!=0) ?
+        ((mod(\y+1,4)!=0)? (1+ mod(\x+1,4)): (1+mod(\x+3,4))):
+        (mod(\y,4)==0 ? (4-mod(\x+3,4)) : ((mod(\x,4)==2)? 1 :(1+ mod(\x,4));
+    };
+    %
+    function RES(\row, \col) {
+        \row = \row-1;
+        \col = \col-1;
+        int \i, \j, \c; 
+        for \i in {0,...,\row}{
+            for \j in {0,...,\col}{
+                \c = RES_val(\j, \i);
                 { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
             };
         };
     };
 }
-%
 %
 % 3. cells
 %
