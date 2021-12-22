@@ -62,51 +62,51 @@
 \usetikzlibrary{math}
 \tikzmath{
     %USE Clocking Scheme
-    function USE_val(\x,\y){
+    function use_val(\x,\y){
         return (mod(\y,2)!=0) ? ((mod(\y+1,4)!=0)?(1+mod(\x+1,4)):(1+mod(\x+3,4))):((mod(\y,4)==0)?(4-mod(\x+3,4)):(4-mod(\x+1,4)));
     };
     %
-    function USE(\row, \col) {
+    function use(\row, \col) {
         \row = \row-1;
         \col = \col-1;
         int \i, \j, \c; 
         for \i in {0,...,\row}{
             for \j in {0,...,\col}{
-                \c = USE_val(\j, \i);
+                \c = use_val(\j, \i);
                 { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
             };
         };
     };
     %TDD Clocking Scheme
-    function TDD_val(\x,\y){
+    function tdd_val(\x,\y){
         return (mod(\y, 2)!=0) ? ((mod(\y+1, 4)!=0)?(1+mod(\x+1, 4)):(1+mod(\x+3, 4))):((mod(\y, 4)==0)?(1+mod(\x, 4)):(1+mod(\x+2, 4)));
     };
     %
-    function TDD(\row, \col) {
+    function tdd(\row, \col) {
         \row = \row-1;
         \col = \col-1;
         int \i, \j, \c; 
         for \i in {0,...,\row}{
             for \j in {0,...,\col}{
-                \c = TDD_val(\j, \i);
+                \c = tdd_val(\j, \i);
                 { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
             };
         };
     };
     %RES Clocking Scheme
-    function RES_val(\x,\y){
+    function res_val(\x,\y){
         return (mod(\y,2)!=0) ?
         ((mod(\y+1,4)!=0)? (1+ mod(\x+1,4)): (1+mod(\x+3,4))):
         (mod(\y,4)==0 ? (4-mod(\x+3,4)) : ((mod(\x,4)==2)? 1 :(1+ mod(\x,4));
     };
     %
-    function RES(\row, \col) {
+    function res(\row, \col) {
         \row = \row-1;
         \col = \col-1;
         int \i, \j, \c; 
         for \i in {0,...,\row}{
             for \j in {0,...,\col}{
-                \c = RES_val(\j, \i);
+                \c = res_val(\j, \i);
                 { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
             };
         };
