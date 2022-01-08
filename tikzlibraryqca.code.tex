@@ -284,12 +284,14 @@
 \tikzset{
     setup grid/.style args={#1 rows and #2 cols with size #3 of #4}{
         base size=#3,
-        /utils/exec={\tikzset{base size/.get=\bsize}},
+        %/utils/exec={\tikzset{base size/.get=\bsize}},
+        evaluate={\bsize=#3;},
         every node/.style={minimum size=\bsize},
         x=\bsize,
         y=\bsize,
         csfunc=#4,
-        /utils/exec={\tikzset{csfunc/.get=\csf},\pgfmathparse{\csf(#1,#2)}},
+        %/utils/exec={\tikzset{csfunc/.get=\csf},\pgfmathparse{\csf(#1,#2)}},
+        evaluate={#4(#1,#2);},
     }
 }
 %
@@ -333,11 +335,13 @@
         xshift={(#1-0.4)*\bsize},
         yshift={(#2-0.4)*\bsize},
         /utils/exec={
+            \tikzset{csfunc/.get=\csf},
             \pgfmathparse{int(\csf_val(#1,#2))},
             \edef\cscolor{cell_color_\pgfmathresult},
         },
         every node/.append style={
             fill=\cscolor,
         },
+        every label/.style={fill=none, minimum size=0,label distance=1},
     } 
 }
