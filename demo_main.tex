@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage{standalone}
+\usepackage{tikz}
+\usetikzlibrary{qca,math,arrows.meta}
+\usepackage{subcaption}
+
+\begin{document}
+\begin{figure}
+\centering
+\begin{subcaptiongroup}
+\subcaptionlistentry{USE}
+\label{fig:use-cs}
+\input{clocking_scheme_use.tex} 
+\subcaptionlistentry{2DDWave}
+\label{fig:2dd-cs}
+\input{clocking_scheme_2dd.tex}
+\end{subcaptiongroup}
+\captionsetup{subrefformat=parens}
+\caption{FCN clocking schemes: \subref{fig:use-cs} USE clocking scheme, and \subref{fig:2dd-cs}} clocking scheme.
+\end{figure}
+\end{document}

@@ -1,347 +1,371 @@
-\ProvidesFileRCS{tikzlibraryddd.code.tex}
+\ProvidesFileRCS{tikzlibraryqca.code.tex}
 
-% 1. color definitions
+\usetikzlibrary{calc,math,arrows.meta}
+
+%1. tile and cell size
+\tikzset{
+    cell size/.code={\def\qcacellsize{#1}},
+    cell size/.default=1cm,
+    cell cs/.style={cell size=#1,x=#1,y=#1},
+    cell cs/.default=1cm,
+    %
+    tile size/.code={\def\qcatilesize{#1}},
+    tile size/.default=5cm,
+    tile cs/.style={tile size=#1,x=#1,y=#1},
+    tile cs/.default=5cm,
+}
+\tikzset{tile cs}
 %
-%clocking grid color scheme
+%2. clock scheme
 \pgfutil@colorlet{tile_color_1}{lightgray!20}
 \pgfutil@colorlet{tile_color_2}{lightgray!50}
 \pgfutil@colorlet{tile_color_3}{lightgray}
 \pgfutil@colorlet{tile_color_4}{gray}
-% cell color scheme 
-% from fiction (default)
-\pgfutil@definecolor{cell_color_1}{HTML}{86E291}
-\pgfutil@definecolor{cell_color_2}{HTML}{FFA5FA}
-\pgfutil@definecolor{cell_color_3}{HTML}{00C8BC}
-\pgfutil@definecolor{cell_color_4}{HTML}{F2F2F2}
-\pgfutil@definecolor{input_color}{HTML}{008DC8}
-\pgfutil@definecolor{output_color}{HTML}{E28686}
-\pgfutil@definecolor{fixed_color}{HTML}{000000}
-% from Torres 
-% \pgfutil@definecolor{cell_color_1}{HTML}{008000}
-% \pgfutil@definecolor{cell_color_2}{HTML}{800080}
-% \pgfutil@definecolor{cell_color_3}{HTML}{008080}
-% \pgfutil@definecolor{cell_color_4}{HTML}{F2F2F2}
-% \pgfutil@definecolor{input_color}{HTML}{3663B2}
-% \pgfutil@definecolor{output_color}{HTML}{D47000}
-% \pgfutil@definecolor{fixed_color}{HTML}{000000}
-% colorful
-% \pgfutil@definecolor{cell_color_1}{RGB}{68, 189, 50}
-% \pgfutil@definecolor{cell_color_2}{RGB}{140, 122, 230}
-% \pgfutil@definecolor{cell_color_3}{RGB}{0, 151, 230}
-% \pgfutil@definecolor{cell_color_4}{RGB}{192,192,192}
-% \pgfutil@definecolor{input_color}{RGB}{39, 60, 117}
-% \pgfutil@definecolor{output_color}{RGB}{255,159,67}
-% \pgfutil@definecolor{fixed_color}{RGB}{20,20,20}
-% dark color
-% \pgfutil@definecolor{cell_color_1}{RGB}{0,150,136}
-% \pgfutil@definecolor{cell_color_2}{RGB}{123,104,238}
-% \pgfutil@definecolor{cell_color_3}{RGB}{135,206,250}
-% \pgfutil@definecolor{cell_color_4}{RGB}{128,128,128}
-% \pgfutil@definecolor{input_color}{RGB}{65,105,225}
-% \pgfutil@definecolor{output_color}{RGB}{255,165,0}
-% \pgfutil@definecolor{fixed_color}{RGB}{32,32,32}
-% light color
-% \pgfutil@definecolor{cell_color_1}{RGB}{153,204,51}
-% \pgfutil@definecolor{cell_color_2}{RGB}{204,204,255}
-% \pgfutil@definecolor{cell_color_3}{RGB}{122,224,255}
-% \pgfutil@definecolor{cell_color_4}{RGB}{204,204,204}
-% \pgfutil@definecolor{input_color}{RGB}{153,204,255}
-% \pgfutil@definecolor{output_color}{RGB}{255,204,153}
-% \pgfutil@definecolor{fixed_color}{RGB}{110,110,110}
-% gray color
-% \pgfutil@definecolor{cell_color_1}{RGB}{89,89,91}
-% \pgfutil@definecolor{cell_color_2}{RGB}{129,130,132}
-% \pgfutil@definecolor{cell_color_3}{RGB}{210,210,212}
-% \pgfutil@definecolor{cell_color_4}{RGB}{168,169,173}
-% \pgfutil@definecolor{input_color}{RGB}{230,230,230}
-% \pgfutil@definecolor{output_color}{RGB}{40,40,40}
-% \pgfutil@definecolor{fixed_color}{HTML}{000000}
-%
-% 2. clocking schemes
-%
-\usetikzlibrary{math}
+\tikzset{
+    tile clock/.cd,
+    .is choice,
+    1/.style={%
+        pic actions/.style={fill=tile_color_1}%
+    },
+    2/.style={%
+        pic actions/.style={fill=tile_color_2}%
+    },
+    3/.style={%
+        pic actions/.style={fill=tile_color_3}%
+    },
+    4/.style={%
+        pic actions/.style={fill=tile_color_4}%
+    },
+    0/.style={%
+        pic actions/.style={fill=white}%
+    },
+    .default=0,
+}
+%tile pic definition
+\tikzset{pics/tile/.style={code={
+    \path[pic actions] +(-0.5,-0.5) rectangle +(0.5,0.5);
+}}}
+%clocking scheme functions
 \tikzmath{
     %USE Clocking Scheme
-    function use_val(\x,\y){
-        return (mod(\y,2)!=0) ? ((mod(\y+1,4)!=0)?(1+mod(\x+1,4)):(1+mod(\x+3,4))):((mod(\y,4)==0)?(4-mod(\x+3,4)):(4-mod(\x+1,4)));
+    function use(\x,\y){
+        return (mod(\y,2)!=0) ? 
+        ((mod(\y+1,4)!=0)?(1+mod(\x+2,4)):(1+mod(\x,4))) :
+        ((mod(\y,4)==0)?(4-mod(\x+2,4)):(4-mod(\x,4)));
     };
-    %
-    function use(\row, \col) {
-        \row = \row-1;
-        \col = \col-1;
-        int \i, \j, \c; 
-        for \i in {0,...,\row}{
-            for \j in {0,...,\col}{
-                \c = use_val(\j, \i);
-                { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
-            };
-        };
-    };
-    %TDD Clocking Scheme
-    function tdd_val(\x,\y){
-        return (mod(\y, 2)!=0) ? ((mod(\y+1, 4)!=0)?(1+mod(\x+1, 4)):(1+mod(\x+3, 4))):((mod(\y, 4)==0)?(1+mod(\x, 4)):(1+mod(\x+2, 4)));
-    };
-    %
-    function tdd(\row, \col) {
-        \row = \row-1;
-        \col = \col-1;
-        int \i, \j, \c; 
-        for \i in {0,...,\row}{
-            for \j in {0,...,\col}{
-                \c = tdd_val(\j, \i);
-                { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
-            };
-        };
+    %2DDWave Clocking Scheme
+    function tdd(\x,\y){
+        return (mod(\y, 2)!=0) ? 
+        ((mod(\y+1, 4)!=0)?(1+mod(\x+2, 4)):(1+mod(\x, 4))) :
+        ((mod(\y, 4)==0)?(1+mod(\x+3, 4)):(1+mod(\x+1, 4)));
     };
     %RES Clocking Scheme
-    function res_val(\x,\y){
+    function res(\x,\y){
         return (mod(\y,2)!=0) ?
         ((mod(\y+1,4)!=0)? (1+ mod(\x+1,4)): (1+mod(\x+3,4))):
         (mod(\y,4)==0 ? (4-mod(\x+3,4)) : ((mod(\x,4)==2)? 1 :(1+ mod(\x,4));
     };
-    %
-    function res(\row, \col) {
-        \row = \row-1;
-        \col = \col-1;
-        int \i, \j, \c; 
-        for \i in {0,...,\row}{
-            for \j in {0,...,\col}{
-                \c = res_val(\j, \i);
-                { \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
-            };
-        };
+    %BANCS Clocking Scheme
+    function bancs(\x,\y){
+        return (mod(\y,6)) == 0) ? (3 - mod(\x+2,3)):
+        ((mod(\y-1,6) == 0)? (1 + mod(\x+4,3)) :
+        (((mod(\y-2,6) == 0)? (3-mod(\x + 4,3)) :
+        (((mod(\y-3,6) == 0) ? (1 + mod(\x + 2 , 3)) :
+        (((mod((\y - 4) , 6) == 0)?(3 - mod((\x + 3),3)): (1 + mod((\x + 3) , 3))))));
+    };
+    %CFE Clocking Scheme
+    function cfe(\x,\y){
+        return ((mod(\y,2)!=0) ? ((mod(\x,2)!=0 ? 4 : 1) :((mod(\x,2) !=0)? 3 :2));
     };
 }
 %
-% 3. cells
-%
-% normal pr cell
-%
-\pgfdeclareshape{_cell}{%
-    \inheritsavedanchors[from=rectangle]%
-    \inheritanchorborder[from=rectangle]%
-    \inheritanchor[from=rectangle]{north}%
-    \inheritanchor[from=rectangle]{north west}%
-    \inheritanchor[from=rectangle]{north east}%
-    \inheritanchor[from=rectangle]{center}%
-    \inheritanchor[from=rectangle]{west}%
-    \inheritanchor[from=rectangle]{east}%
-    \inheritanchor[from=rectangle]{mid}%
-    \inheritanchor[from=rectangle]{mid west}%
-    \inheritanchor[from=rectangle]{mid east}%
-    \inheritanchor[from=rectangle]{base}%
-    \inheritanchor[from=rectangle]{base west}%
-    \inheritanchor[from=rectangle]{base east}%
-    \inheritanchor[from=rectangle]{south}%
-    \inheritanchor[from=rectangle]{south west}%
-    \inheritanchor[from=rectangle]{south east}%
-    \backgroundpath{%
-        %draw the outer rectangle border with rounded corners
-        \pgfsetcornersarced{\pgfpointscale{0.09}{\pgfpoint{\pgfkeysvalueof{/pgf/minimum width}}{\pgfkeysvalueof{/pgf/minimum height}}}}%
-        \pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}%
-        \pgfgetlastxy{\xb}{\yb}%
-        \pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}%
-        \pgfgetlastxy{\xa}{\ya}%
-        \pgfpathrectanglecorners{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}%
-        %draw the inner circles
-        \pgfmathsetlength{\pgf@xa}{\pgfkeysvalueof{/pgf/minimum width}}%
-        \pgf@xa=0.145\pgf@xa%
-        {\pgfpathcircle{\pgfpointlineattime{0.25}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}}%
-        {\pgfpathcircle{\pgfpointlineattime{0.75}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}}%
-        {\pgfpathcircle{\pgfpointlineattime{0.25}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}{\pgf@xa}}%
-        {\pgfpathcircle{\pgfpointlineattime{0.75}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}{\pgf@xa}}%
-    }%
-}%
-%
-% via
-%
-\pgfdeclareshape{_via}{%
-    \inheritsavedanchors[from=rectangle]%
-    \inheritanchorborder[from=rectangle]%
-    \inheritanchor[from=rectangle]{north}%
-    \inheritanchor[from=rectangle]{north west}%
-    \inheritanchor[from=rectangle]{north east}%
-    \inheritanchor[from=rectangle]{center}%
-    \inheritanchor[from=rectangle]{west}%
-    \inheritanchor[from=rectangle]{east}%
-    \inheritanchor[from=rectangle]{mid}%
-    \inheritanchor[from=rectangle]{mid west}%
-    \inheritanchor[from=rectangle]{mid east}%
-    \inheritanchor[from=rectangle]{base}%
-    \inheritanchor[from=rectangle]{base west}%
-    \inheritanchor[from=rectangle]{base east}%
-    \inheritanchor[from=rectangle]{south}%
-    \inheritanchor[from=rectangle]{south west}%
-    \inheritanchor[from=rectangle]{south east}%
-    \backgroundpath{%
-        \pgfsetcornersarced{\pgfpointscale{0.09}{\pgfpoint{\pgfkeysvalueof{/pgf/minimum width}}{\pgfkeysvalueof{/pgf/minimum height}}}}%
-        \pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}%
-        \pgfgetlastxy{\xb}{\yb}%
-        \pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}%
-        \pgfgetlastxy{\xa}{\ya}%
-        \pgfpathrectanglecorners{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}%
-        % 
-        \pgfmathsetlength{\pgf@xa}{\pgfkeysvalueof{/pgf/minimum width}}%
-        \pgf@xa=0.325\pgf@xa%
-        \pgfpathcircle{\pgfpointlineattime{0.5}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}%
-    }%
-}%
-%
-% cross
-%
-\pgfdeclareshape{_cross}{%
-    \inheritsavedanchors[from=rectangle]%
-    \inheritanchorborder[from=rectangle]%
-    \inheritanchor[from=rectangle]{north}%
-    \inheritanchor[from=rectangle]{north west}%
-    \inheritanchor[from=rectangle]{north east}%
-    \inheritanchor[from=rectangle]{center}%
-    \inheritanchor[from=rectangle]{west}%
-    \inheritanchor[from=rectangle]{east}%
-    \inheritanchor[from=rectangle]{mid}%
-    \inheritanchor[from=rectangle]{mid west}%
-    \inheritanchor[from=rectangle]{mid east}%
-    \inheritanchor[from=rectangle]{base}%
-    \inheritanchor[from=rectangle]{base west}%
-    \inheritanchor[from=rectangle]{base east}%
-    \inheritanchor[from=rectangle]{south}%
-    \inheritanchor[from=rectangle]{south west}%
-    \inheritanchor[from=rectangle]{south east}%
-    \backgroundpath{%
-        \pgfsetcornersarced{\pgfpointscale{0.09}{\pgfpoint{\pgfkeysvalueof{/pgf/minimum width}}{\pgfkeysvalueof{/pgf/minimum height}}}}%
-        \pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}%
-        \pgfgetlastxy{\xb}{\yb}%
-        \pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}%
-        \pgfgetlastxy{\xa}{\ya}%
-        \pgfpathrectanglecorners{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}%
-        % 
-        \pgfpathmoveto{\pgfpointlineattime{0.2}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}%
-        \pgfpathlineto{\pgfpointlineattime{0.8}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}%
-        \pgfpathmoveto{\pgfpointlineattime{0.2}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}%
-        \pgfpathlineto{\pgfpointlineattime{0.8}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}%
-    }%
-}%
-%
-% fixed 
-%
-\tikzset{pola/.store in=\mypola}
-%
-\pgfdeclareshape{_fixed}{%
-    \inheritsavedanchors[from=rectangle]%
-    \inheritanchorborder[from=rectangle]%
-    \inheritanchor[from=rectangle]{north}%
-    \inheritanchor[from=rectangle]{north west}%
-    \inheritanchor[from=rectangle]{north east}%
-    \inheritanchor[from=rectangle]{center}%
-    \inheritanchor[from=rectangle]{west}%
-    \inheritanchor[from=rectangle]{east}%
-    \inheritanchor[from=rectangle]{mid}%
-    \inheritanchor[from=rectangle]{mid west}%
-    \inheritanchor[from=rectangle]{mid east}%
-    \inheritanchor[from=rectangle]{base}%
-    \inheritanchor[from=rectangle]{base west}%
-    \inheritanchor[from=rectangle]{base east}%
-    \inheritanchor[from=rectangle]{south}%
-    \inheritanchor[from=rectangle]{south west}%
-    \inheritanchor[from=rectangle]{south east}%
-    \backgroundpath{%
-        %draw the outer rectangle border with rounded corners
-        \pgfsetcornersarced{\pgfpointscale{0.09}{\pgfpoint{\pgfkeysvalueof{/pgf/minimum width}}{\pgfkeysvalueof{/pgf/minimum height}}}}%
-        \pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}%
-        \pgfgetlastxy{\xb}{\yb}%
-        \pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}%
-        \pgfgetlastxy{\xa}{\ya}%
-        \pgfpathrectanglecorners{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}%
-        \pgfsetfillcolor{fixed_color}
-        \pgfusepath{fill}
-        %draw the inner circles
-        \pgfmathsetlength{\pgf@xa}{\pgfkeysvalueof{/pgf/minimum width}}%
-        \pgf@xa=0.145\pgf@xa%
-        \ifnum\mypola=1\relax%
-            {\pgfpathcircle{\pgfpointlineattime{0.25}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}}%
-            {\pgfpathcircle{\pgfpointlineattime{0.75}{\pgfpoint{\xa}{\ya}}{\pgfpoint{\xb}{\yb}}}{\pgf@xa}}%
-            \pgfsetfillcolor{white}
-            \pgfusepath{fill}%
-        \else%
-            {\pgfpathcircle{\pgfpointlineattime{0.25}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}{\pgf@xa}}%
-            {\pgfpathcircle{\pgfpointlineattime{0.75}{\pgfpoint{\xa}{\yb}}{\pgfpoint{\xb}{\ya}}}{\pgf@xa}}%
-            \pgfsetfillcolor{white}
-            \pgfusepath{fill}%
-        \fi%
-    }%
-}%
-%
-%
-% 4. styles
-%
-% library global options
-\tikzset{ 
-    base size/.initial=5cm, 
-    csfunc/.initial=use,
-}
-%
-% clocking scheme setup code
 \tikzset{
-    setup grid/.style args={#1 rows and #2 cols with size #3 of #4}{
-        base size=#3,
-        %/utils/exec={\tikzset{base size/.get=\bsize}},
-        evaluate={\bsize=#3;},
-        every node/.style={minimum size=\bsize},
-        x=\bsize,
-        y=\bsize,
-        csfunc=#4,
-        %/utils/exec={\tikzset{csfunc/.get=\csf},\pgfmathparse{\csf(#1,#2)}},
-        evaluate={#4(#1,#2);},
+    tile row/.code={\def\qcatilerow{#1}},
+    tile row/.default=0,
+    tile column/.code={\def\qcatilecolumn{#1}},
+    tile tolumn/.default=0,
+    tile cs function/.is choice,
+    tile cs function/use/.code={
+        \def\qcacsfunc{use}
+        \def\qcacsrotate{0}
+        \def\qcaphase{4}
+    },
+    tile cs function/2dd/.code={
+        \def\qcacsfunc{tdd}
+        \def\qcacsrotate{0}
+        \def\qcaphase{4}
+    },
+    tile cs function/res/.code={
+        \def\qcacsfunc{res}
+        \def\qcacsrotate{0}
+        \def\qcaphase{4}
+    },
+    tile cs function/bancs/.code={
+        \def\qcacsfunc{bancs}
+        \def\qcacsrotate{0}
+        \def\qcaphase{3}
+    },
+    tile cs function/cfe/.code={
+        \def\qcacsfunc{cfe}
+        \def\qcacsrotate{-45}
+        \def\qcaphase{4}
+    },
+    tile cs function/.default=use,
+    clock scheme/.style args={#1:#2x#3}{
+        tile cs function=#1,
+        rotate=\qcacsrotate,
+        every pic/.style={rotate=\qcacsrotate},
+        tile row=#2,tile column=#3,
+        font=\huge,
+        evaluate={
+            int \row,\col,\c;
+            \row=\qcatilerow-1;
+            \col=\qcatilecolumn-1;
+            for \i in {0,...,\row} {
+                for \j in {0,...,\col} {
+                    \c=\qcacsfunc(\j,\i);
+                    {\pic[tile clock=\c](t\j\i) at(\j,\i){tile};};
+                };
+            };
+        }
     }
 }
 %
-% cell styles
+%3. color scheme
 \tikzset{
-    cell/.style={
-        shape=_cell, 
-        draw, 
-        minimum size=0.18*\bsize,
+    color scheme/.cd,
+    .is choice,
+    fiction/.code={%
+        \pgfutil@definecolor{cell_color_1}{HTML}{86E291}%
+        \pgfutil@definecolor{cell_color_2}{HTML}{FFA5FA}%
+        \pgfutil@definecolor{cell_color_3}{HTML}{00C8BC}%
+        \pgfutil@definecolor{cell_color_4}{HTML}{F2F2F2}%
+        \pgfutil@definecolor{input_color}{HTML}{008DC8}%
+        \pgfutil@definecolor{output_color}{HTML}{E28686}%
+        \pgfutil@definecolor{fixed_color}{HTML}{000000}%
     },
-    via/.style={
-        shape=_via,
-        draw,
-        minimum size=0.18*\bsize,
+    torres/.code={%
+        \pgfutil@definecolor{cell_color_1}{HTML}{008000}%
+        \pgfutil@definecolor{cell_color_2}{HTML}{800080}%
+        \pgfutil@definecolor{cell_color_3}{HTML}{008080}%
+        \pgfutil@definecolor{cell_color_4}{HTML}{F2F2F2}%
+        \pgfutil@definecolor{input_color}{HTML}{3663B2}%
+        \pgfutil@definecolor{output_color}{HTML}{D47000}%
+        \pgfutil@definecolor{fixed_color}{HTML}{000000}%
     },
-    cross/.style={
-        shape=_cross,
-        draw,
-        minimum size=0.18*\bsize,
+    colorful/.code={%
+        \pgfutil@definecolor{cell_color_1}{RGB}{68, 189, 50}%
+        \pgfutil@definecolor{cell_color_2}{RGB}{140, 122, 230}%
+        \pgfutil@definecolor{cell_color_3}{RGB}{0, 151, 230}%
+        \pgfutil@definecolor{cell_color_4}{RGB}{192,192,192}%
+        \pgfutil@definecolor{input_color}{RGB}{39, 60, 117}%
+        \pgfutil@definecolor{output_color}{RGB}{255,159,67}%
+        \pgfutil@definecolor{fixed_color}{RGB}{20,20,20}%
     },
-    input/.style={
-        cell,
-        fill=input_color,
+    dark/.code={
+        \pgfutil@definecolor{cell_color_1}{RGB}{0,150,136}
+        \pgfutil@definecolor{cell_color_2}{RGB}{123,104,238}
+        \pgfutil@definecolor{cell_color_3}{RGB}{135,206,250}
+        \pgfutil@definecolor{cell_color_4}{RGB}{100,100,100}
+        \pgfutil@definecolor{input_color}{RGB}{65,105,225}
+        \pgfutil@definecolor{output_color}{RGB}{255,165,0}
+        \pgfutil@definecolor{fixed_color}{RGB}{32,32,32}
     },
-    output/.style={
-        cell,
-        fill=output_color,
+    light/.code={
+         \pgfutil@definecolor{cell_color_1}{RGB}{153,204,51}%
+         \pgfutil@definecolor{cell_color_2}{RGB}{204,204,255}%
+         \pgfutil@definecolor{cell_color_3}{RGB}{122,224,255}%
+         \pgfutil@definecolor{cell_color_4}{RGB}{204,204,204}%
+         \pgfutil@definecolor{input_color}{RGB}{153,204,255}%
+         \pgfutil@definecolor{output_color}{RGB}{255,204,153}%
+         \pgfutil@definecolor{fixed_color}{RGB}{110,110,110}%
     },
-    fixed/.style={
-        shape=_fixed,
-        minimum size=0.18*\bsize,
-        pola=#1,
+    gray/.code={
+         \pgfutil@definecolor{cell_color_1}{RGB}{89,89,91}%
+         \pgfutil@definecolor{cell_color_2}{RGB}{129,130,132}%
+         \pgfutil@definecolor{cell_color_3}{RGB}{210,210,212}%
+         \pgfutil@definecolor{cell_color_4}{RGB}{168,169,173}%
+         \pgfutil@definecolor{input_color}{RGB}{230,230,230}%
+         \pgfutil@definecolor{output_color}{RGB}{40,40,40}%
+         \pgfutil@definecolor{fixed_color}{HTML}{000000}%
     },
+    .default=fiction,
+}
+\tikzset{color scheme}
+%
+\def\qcacelltype{normal}
+\def\qcanormalcell{normal}
+\def\qcaviacell{via}
+\def\qcacrosscell{cross}
+\def\qcafixedcell{fixed}
+\tikzset{
+    clock/.cd,
+    .is choice,
+    1/.style={%
+        pic actions/.style={fill=cell_color_1},
+        /utils/exec=\def\qcacelltype{normal}
+    },
+    2/.style={%
+        pic actions/.style={fill=cell_color_2},
+        /utils/exec=\def\qcacelltype{normal}
+    },
+    3/.style={%
+        pic actions/.style={fill=cell_color_3},
+        /utils/exec=\def\qcacelltype{normal}
+    },
+    4/.style={%
+        pic actions/.style={fill=cell_color_4},
+        /utils/exec=\def\qcacelltype{normal}
+        
+    },
+    0/.style={%
+        pic actions/.style={fill=black},
+        /utils/exec=\def\qcacelltype{normal}
+    },
+    .default=0,
+}
+\tikzset{input/.style={
+    pic actions/.style={fill=input_color},
+    /utils/exec=\def\qcacelltype{normal}
+}}
+\tikzset{output/.style={
+    pic actions/.style={fill=output_color},
+    /utils/exec=\def\qcacelltype{normal}
+}}
+\tikzset{via/.style={
+    /utils/exec=\def\qcacelltype{via}
+}}
+\tikzset{cross/.style={
+    /utils/exec=\def\qcacelltype{cross}
+}}
+\tikzset{fixed/.style={
+    pic actions/.style={fill=fixed_color},
+    /utils/exec=\def\qcacelltype{fixed}
+}}
+%
+%4. polarization
+\def\qcacellpolarization{none}
+\def\qcapositive{positive}
+\def\qcanegative{negative}
+%
+\tikzset{
+    polarization/.cd,
+    .is choice,
+    0/.code={%
+        \def\qcacellpolarization{none}%
+    },
+    1/.code={%
+        \def\qcacellpolarization{positive}%
+    },
+    -1/.code={%
+        \def\qcacellpolarization{negative}%
+    },
+    .default=0,
 }
 %
-% tile initialization code
+%5. cell pics definition
+\tikzset{pics/qca cell/.style={code={
+    \coordinate (-center) at  (0,0);
+    \coordinate (-east)   at +( 0.45,0);
+    \coordinate (-north)  at +(0, 0.45);
+    \coordinate (-west)   at +(-0.45,0);
+    \coordinate (-south)  at +(0,-0.45);
+    %    
+    \coordinate (-swo) at ($ (-south)!0.5!(-west) $);
+    \coordinate (-nwo) at ($ (-north)!0.5!(-west) $);
+    \coordinate (-neo) at ($ (-north)!0.5!(-east) $);
+    \coordinate (-seo) at ($ (-south)!0.5!(-east) $);
+    %    
+    \path[pic actions] +(-0.45,-0.45) rectangle +(0.45,0.45); 
+    %    
+    \foreach \o in {-swo,-nwo,-neo,-seo} 
+        \fill[fill=white] (\o) let \p1=($ (-center)!.5!(\o) $) in circle ({veclen(\x1,\y1)});
+    \ifx\fcncellpolarization\fcnpositive
+        \foreach \o in {-swo,-neo}
+            \fill[fill=black!80] (\o) let \p1=($ (-center)!.32!(\o) $) in circle ({veclen(\x1,\y1)}); 
+    \else \ifx\fcncellpolarization\fcnnegative
+        \foreach \o in {-nwo,-seo}
+            \fill[fill=black!80] (\o) let \p1=($ (-center)!.32!(\o) $) in circle ({veclen(\x1,\y1)}); 
+    \else
+        \foreach \o in {-swo,-nwo,-neo,-seo} 
+            \fill[black!80] (\o) let \p1=($ (-center)!.22!(\o) $) in circle ({veclen(\x1,\y1)});
+    \fi\fi
+}}} 
+%
 \tikzset{
     in tile/.style args={#1 #2}{
-        x=\bsize/5,
-        y=\bsize/5,
-        xshift={(#1-0.4)*\bsize},
-        yshift={(#2-0.4)*\bsize},
-        /utils/exec={
-            \tikzset{csfunc/.get=\csf},
-            \pgfmathparse{int(\csf_val(#1,#2))},
-            \edef\cscolor{cell_color_\pgfmathresult},
-        },
-        every node/.append style={
-            fill=\cscolor,
-        },
-        every label/.style={fill=none, minimum size=0,label distance=1},
-    } 
+        cell cs=0.2*\qcatilesize,
+        xshift=(#1-0.4)*\qcatilesize,
+        yshift=(#2-0.4)*\qcatilesize,
+        evaluate={\c=\qcacsfunc(#1,#2);},
+        clock=\c,
+    }
+}
+%cell
+\tikzset{pics/cell/.style={code={
+    \coordinate (-center) at (0, 0);
+    \coordinate (-east)   at (0.45, 0);
+    \coordinate (-north)  at (0, 0.45);
+    \coordinate (-west)   at (-0.45, 0);
+    \coordinate (-south)  at (0, -0.45);
+    %  
+    \tikzset{very thick}
+    \path[pic actions,draw=black,rounded corners=2pt] (-south -| -west) rectangle (-north -| -east);
+    %
+    \ifx\qcacelltype\qcanormalcell
+        \foreach \d in {-east, -north, -west, -south}
+            \draw[black] ($(-center)!.7!45:(\d)$) circle[radius=.12];
+    \else \ifx\qcacelltype\qcaviacell
+        \draw[black] (-center) circle [radius=0.325];
+    \else \ifx\qcacelltype\qcacrosscell
+        \foreach \d in {-east, -north, -west, -south}
+            \draw[black] (-center) -- ($(-center)!0.8!45:(\d)$);
+    \else \ifx\qcacelltype\qcafixedcell
+        \ifx\qcacellpolarization\qcapositive
+            \foreach \d in {-east, -west}
+                \fill[white] ($(-center)!.7!45:(\d)$) circle[radius=.12];
+        \else
+            \foreach \d in {-north, -south}
+                \fill[white] ($(-center)!.7!45:(\d)$) circle[radius=.12];
+        \fi
+    \fi\fi\fi\fi
+}}}
+%
+%6. standard clocking scheme generation function
+\tikzset{dataflow/.style={-{Stealth[inset=0pt]},thick,black!75}}
+\def\generatecs{%
+\tikzmath {
+    int \row = \qcatilerow-1;%
+    int \col = \qcatilecolumn-1;%
+    %
+    int \x,\y;%
+    for \x in {0,...,\col} {%
+        for \y in {0,...,\row} {%
+            \c{\x,\y} = \qcacsfunc(\x,\y);%
+            {\node(\x\y) at(\x,\y) {\c{\x,\y}};};%
+        };%
+    };%
+    %
+    int \rt,\up;%
+    for \x in {0,...,\col}{%
+        for \y in {0,...,\row}{%
+            if \x<\col then {%
+                \rt = \x + 1;%
+                if \c{\rt,\y}==\c{\x,\y}+1 || (\c{\x,\y}==\qcaphase && \c{\rt,\y}==1) then {%
+                    {\draw[dataflow] (\x\y)--(\rt\y);};%
+                } else {%
+                    {\draw[dataflow] (\rt\y)--(\x\y);};%
+                };%
+            };%
+            if \y<\row then {%
+                \up = \y + 1;%
+                if \c{\x,\up}==\c{\x,\y}+1 || (\c{\x,\y}==\qcaphase && \c{\x,\up}==1) then {%
+                    {\draw[dataflow] (\x\y)--(\x\up);};%
+                } else {%
+                    {\draw[dataflow] (\x\up)--(\x\y);};%
+                };%
+            };%
+        };%
+    };%
+}%
 }
