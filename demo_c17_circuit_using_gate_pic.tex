@@ -1,0 +1,104 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{qca}
+
+\begin{document}
+\begin{tikzpicture}[clock scheme=use:7x5]
+
+\scoped[in tile=0 0] \pic{qca lshaped line};
+\scoped[in tile=1 0] \pic{qca straight line};
+\begin{scope}[in tile=2 0] 
+    \pic{qca tshaped line=north};
+    \pic[input] at(4,2){cell};
+    \node[right] at(2042-east){I3};
+\end{scope}
+\begin{scope}[in tile=4 0]
+    \pic{qca straight line=vertical};
+    \pic[input] at(2,0) {cell};
+    \node[right] at(4020-east){I2};
+\end{scope}
+
+\scoped[in tile=0 1] \pic{qca straight line=vertical};
+\begin{scope}[in tile=1 1]
+    \pic{qca straight line};
+    \pic[input] at(0,2) {cell};
+    \node[left] at(1102-west){I1};
+\end{scope}
+\begin{scope}[in tile=2 1]
+    \pic{qca and gate=south};
+    \node[above] at(2124-north){-1.00};
+\end{scope}
+\scoped[in tile=3 1] \pic{qca straight line};
+\begin{scope}[in tile=4 1]
+    \pic{qca straight line=vertical};
+    \foreach \y in {2,3,4} \pic at(0,\y) {cell};
+\end{scope}
+
+\scoped[in tile=0 2] \pic{qca straight line=vertical};
+\begin{scope}[in tile=3 2]
+    \pic{qca or gate=north};
+    \node[below] at(3220-south) {1.00};
+    \pic[output] at(0,2){cell};
+    \node[left] at(3202-west) {O1};
+\end{scope}
+\begin{scope}[in tile=4 2]
+    \pic{qca straight line=vertical};
+    \foreach \y in {0,1,2} \pic at(0,\y) {cell};
+\end{scope}
+
+\scoped[in tile=0 3] \pic{qca lshaped line=south};
+\begin{scope}[in tile=1 3]
+    \pic{qca and gate=north};
+    \node[left] at(1320-west){-1.00};
+\end{scope}
+\begin{scope}[in tile=2 3]
+    \pic{qca lshaped line};
+    \foreach \y in {1,3}   \pic at(0,\y) {cell};
+    \foreach \y in {1,2,3} \pic at(1,\y) {cell};
+\end{scope}
+\begin{scope}[in tile=3 3]
+    \pic{qca straight line};
+    \pic{qca cross line with vias=vertical};
+\end{scope}
+\begin{scope}[in tile=4 3]
+    \pic{qca and gate=west};
+    \node[above] at(4342-north){-1.00};
+\end{scope}
+
+\begin{scope}[in tile=0 4]
+    \pic{qca straight line=vertical};
+    \pic[input] at(2,0) {cell};
+    \node[left] at(0420-west) {I5};
+\end{scope}
+\scoped[in tile=1 4] \pic{qca straight line=vertical};
+\scoped[in tile=2 4] \pic{qca straight line=vertical};
+\scoped[in tile=3 4] \pic{qca lshaped line=south};
+\scoped[in tile=4 4] \pic{qca tshaped line=west};
+
+\scoped[in tile=0 5] \pic{qca lshaped line=south};
+\begin{scope}[in tile=1 5]
+    \pic{qca straight line=vertical};
+    \pic{qca cross line with vias};
+\end{scope}
+\begin{scope}[in tile=2 5]
+    \pic{qca and gate=south};
+    \node[above] at(2524-north) {-1.00};
+\end{scope}
+\scoped[in tile=3 5] \pic{qca straight line};
+\begin{scope}[in tile=4 5]
+    \pic{qca or gate=south};
+    \node[above] at(4524-north) {1.00};
+    \pic[output] at(4,2) {cell};
+    \node[below] at(4542-south) {O2};
+\end{scope}
+
+\scoped[in tile=1 6] \pic{qca lshaped line=south};
+\scoped[in tile=2 6] \pic{qca straight line};
+\scoped[in tile=3 6] \pic{qca straight line};
+\begin{scope}[in tile=4 6]
+    \pic{qca straight line};
+    \pic[input] at(4,2) {cell};
+    \node[below] at(4642-south) {I4};
+\end{scope}
+
+\end{tikzpicture}
+\end{document}
