@@ -130,6 +130,44 @@
         }
     }
 }
+%clocking scheme annotation
+\tikzset{dataflow/.style={-{Stealth[inset=0pt]},thick,black!75}}
+\def\annotatecs{%
+\tikzmath {
+    int \row = \qcatilerow-1;%
+    int \col = \qcatilecolumn-1;%
+    %
+    int \x,\y;%
+    for \x in {0,...,\col} {%
+        for \y in {0,...,\row} {%
+            \c{\x,\y} = \qcacsfunc(\x,\y);%
+            {\node(\x\y) at(\x,\y) {\c{\x,\y}};};%
+        };%
+    };%
+    %
+    int \rt,\up;%
+    for \x in {0,...,\col}{%
+        for \y in {0,...,\row}{%
+            if \x<\col then {%
+                \rt = \x + 1;%
+                if \c{\rt,\y}==\c{\x,\y}+1 || (\c{\x,\y}==\qcaphase && \c{\rt,\y}==1) then {%
+                    {\draw[dataflow] (\x\y)--(\rt\y);};%
+                } else {%
+                    {\draw[dataflow] (\rt\y)--(\x\y);};%
+                };%
+            };%
+            if \y<\row then {%
+                \up = \y + 1;%
+                if \c{\x,\up}==\c{\x,\y}+1 || (\c{\x,\y}==\qcaphase && \c{\x,\up}==1) then {%
+                    {\draw[dataflow] (\x\y)--(\x\up);};%
+                } else {%
+                    {\draw[dataflow] (\x\up)--(\x\y);};%
+                };%
+            };%
+        };%
+    };%
+}%
+}
 %
 %3. color scheme
 \tikzset{
@@ -216,7 +254,6 @@
     4/.style={%
         pic actions/.style={fill=cell_color_4},
         /utils/exec=\def\qcacelltype{normal}
-        
     },
     0/.style={%
         pic actions/.style={fill=black},
@@ -334,46 +371,7 @@
     \fi\fi\fi\fi
 }}}
 %
-%6. standard clocking scheme generation function
-\tikzset{dataflow/.style={-{Stealth[inset=0pt]},thick,black!75}}
-\def\annotatecs{%
-\tikzmath {
-    int \row = \qcatilerow-1;%
-    int \col = \qcatilecolumn-1;%
-    %
-    int \x,\y;%
-    for \x in {0,...,\col} {%
-        for \y in {0,...,\row} {%
-            \c{\x,\y} = \qcacsfunc(\x,\y);%
-            {\node(\x\y) at(\x,\y) {\c{\x,\y}};};%
-        };%
-    };%
-    %
-    int \rt,\up;%
-    for \x in {0,...,\col}{%
-        for \y in {0,...,\row}{%
-            if \x<\col then {%
-                \rt = \x + 1;%
-                if \c{\rt,\y}==\c{\x,\y}+1 || (\c{\x,\y}==\qcaphase && \c{\rt,\y}==1) then {%
-                    {\draw[dataflow] (\x\y)--(\rt\y);};%
-                } else {%
-                    {\draw[dataflow] (\rt\y)--(\x\y);};%
-                };%
-            };%
-            if \y<\row then {%
-                \up = \y + 1;%
-                if \c{\x,\up}==\c{\x,\y}+1 || (\c{\x,\y}==\qcaphase && \c{\x,\up}==1) then {%
-                    {\draw[dataflow] (\x\y)--(\x\up);};%
-                } else {%
-                    {\draw[dataflow] (\x\up)--(\x\y);};%
-                };%
-            };%
-        };%
-    };%
-}%
-}
-%
-%7. lines and gates
+%6. lines and gates
 \def\qcadirection{none}
 \def\qcadirectioneast{east}
 \def\qcadirectionnorth{north}
