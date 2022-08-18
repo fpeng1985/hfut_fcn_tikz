@@ -116,7 +116,7 @@
         rotate=\qcacsrotate,
         every pic/.style={rotate=\qcacsrotate},
         tile row=#2,tile column=#3,
-        font=\huge,
+        %font=\huge,
         evaluate={
             int \row,\col,\c;
             \row=\qcatilerow-1;
@@ -350,7 +350,7 @@
     \coordinate (-south)  at (0, -0.45);
     %  
     \tikzset{very thick}
-    \path[pic actions,draw=black,rounded corners=2pt] (-south -| -west) rectangle (-north -| -east);
+    \path[pic actions,draw=black,rounded corners=0.06*\qcacellsize] (-south -| -west) rectangle (-north -| -east);
     %
     \ifx\qcacelltype\qcanormalcell
         \foreach \d in {-east, -north, -west, -south}

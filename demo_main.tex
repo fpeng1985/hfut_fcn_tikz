@@ -1,21 +1,42 @@
 \documentclass{article}
-\usepackage{standalone}
-\usepackage{tikz}
-\usetikzlibrary{qca,math,arrows.meta}
+
+\usepackage[subpreambles,sort,mode=buildnew]{standalone}
+\usepackage{lipsum}
+
+\usepackage{tikzinclude}
+
+\usepackage{caption}
 \usepackage{subcaption}
 
 \begin{document}
-\begin{figure}
+\lipsum[1]
+
+\begin{figure}[!htbp]
 \centering
-\begin{subcaptiongroup}
-\subcaptionlistentry{USE}
-\label{fig:use-cs}
-\input{clocking_scheme_use.tex} 
-\subcaptionlistentry{2DDWave}
-\label{fig:2dd-cs}
-\input{clocking_scheme_2dd.tex}
-\end{subcaptiongroup}
+    \begin{subfigure}[t]{5cm}
+        \centering
+        \includestandalone[width=5cm]{clocking_scheme_use} 
+        \caption{}
+        \label{fig:use-cs}
+    \end{subfigure}
+    \begin{subfigure}[t]{5cm}
+        \centering
+        \includestandalone[width=5cm]{clocking_scheme_2dd}
+        \caption{}
+        \label{fig:2dd-cs}
+    \end{subfigure}
 \captionsetup{subrefformat=parens}
-\caption{FCN clocking schemes: \subref{fig:use-cs} USE clocking scheme, and \subref{fig:2dd-cs}} clocking scheme.
+\caption{FCN clocking schemes: \subref{fig:use-cs} USE clocking scheme, and \subref{fig:2dd-cs}} 2DDWave clocking scheme.
 \end{figure}
+
+\lipsum[2]
+
+\begin{figure}[!htbp]
+    \centering
+%     \includetikzgraphics[default_version]{demo_circuit_c17.tex}
+    \includestandalone[page=1]{demo_circuit_c17}
+    \caption{C17 Circuit}
+    \label{fig:c17_circuit}
+\end{figure}
+
 \end{document}

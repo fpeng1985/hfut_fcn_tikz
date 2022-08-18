@@ -1,0 +1,20 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{qca}
+
+
+\begin{document}
+\begin{tikzpicture}[clock=1]
+    \pic[input,polarization=1](I) at (0,0)  {qca cell};
+    \pic[polarization=1] at (1,0)  {qca cell};
+    \pic[polarization=1] at (1,-1) {qca cell};
+    \pic[polarization=1] at (1,1)  {qca cell};
+    \pic[polarization=1] at (2,-1) {qca cell};
+    \pic[polarization=1] at (2,1)  {qca cell};
+    \pic[polarization=1] at (3,-1) {qca cell};
+    \pic[polarization=1] at (3,1)  {qca cell};
+    \pic[output,polarization=-1] (O) at (4,0)  {qca cell};
+    
+    \node[left]  at(I-west) {$\mathbf I$};
+    \node[right] at(O-east) {$\bar{\mathbf I}$};
+\end{tikzpicture}
+\end{document}
