@@ -3,6 +3,8 @@
 \usetikzlibrary{calc,math,arrows.meta}
 
 %1. tile and cell size
+\def\qcacellsize{1cm}
+\def\qcatilesize{5cm}
 \tikzset{
     cell size/.code={\def\qcacellsize{#1}},
     cell size/.default=1cm,
@@ -14,6 +16,7 @@
     tile cs/.style={tile size=#1,x=#1,y=#1},
     tile cs/.default=5cm,
 }
+%\tikzset{cell cs}
 \tikzset{tile cs}
 %
 %2. clock scheme

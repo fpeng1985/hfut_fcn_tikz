@@ -1,9 +1,8 @@
 \documentclass[tikz]{standalone}
 \usetikzlibrary{qca}
 
-
 \begin{document}
-\begin{tikzpicture}[clock=1]
+\begin{tikzpicture}[cell cs=1cm, clock=1]
     \pic[input,polarization=1](I) at (0,0)  {qca cell};
     \pic[polarization=1] at (1,0)  {qca cell};
     \pic[polarization=1] at (1,-1) {qca cell};
