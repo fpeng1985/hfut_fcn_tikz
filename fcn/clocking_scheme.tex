@@ -1,0 +1,29 @@
+\documentclass[tikz]{standalone}
+\usepackage{tikzinclude}
+\usetikzlibrary{qca}
+
+\begin{document}
+
+\tikzset{tile cs=1cm,font=\normalsize}
+
+\begin{tikzpicture}[clock scheme=use:4x4,/tikzinclude/figure=use]
+\annotatecs
+\end{tikzpicture}
+
+\begin{tikzpicture}[clock scheme=2dd:4x4,/tikzinclude/figure=2dd]
+\annotatecs
+\end{tikzpicture}
+
+\begin{tikzpicture}[clock scheme=res:4x4,/tikzinclude/figure=res]
+\annotatecs
+\end{tikzpicture}
+
+\begin{tikzpicture}[clock scheme=cfe:4x4,/tikzinclude/figure=cfe]
+\annotatecs
+\end{tikzpicture}
+
+\begin{tikzpicture}[clock scheme=bancs:6x3,/tikzinclude/figure=bancs]
+\annotatecs
+\end{tikzpicture}
+
+\end{document}
