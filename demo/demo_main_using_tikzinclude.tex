@@ -1,0 +1,19 @@
+\documentclass{article}
+
+\usepackage[subpreambles,sort,mode=buildnew]{standalone}
+
+\usepackage{lipsum}
+
+\usepackage{tikzinclude}
+
+\begin{document}
+\lipsum[1]
+
+\begin{figure}[!htbp]
+    \centering
+    \includetikzgraphics[default_version]{demo_circuit_c17.tex}
+    \caption{C17 Circuit}
+    \label{fig:c17_circuit}
+\end{figure}
+
+\end{document}
