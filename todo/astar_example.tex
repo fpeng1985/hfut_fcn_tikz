@@ -1,0 +1,63 @@
+\documentclass[preview]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, math, calc}
+
+\begin{document}
+  \definecolor{cs1}{RGB}{89,89,91}
+  \definecolor{cs2}{RGB}{129,130,132}
+  \definecolor{cs3}{RGB}{210,210,212}
+  \definecolor{cs4}{RGB}{168,169,173}
+  \definecolor{inp}{RGB}{230,230,230}
+  \definecolor{out}{RGB}{40,40,40}
+  \definecolor{fix}{RGB}{0,0,0}
+  
+  \begin{tikzpicture}[
+      x={(2cm, 0cm)},y={(0cm,-2cm)},
+      c1/.style={shape=rectangle, fill=cs1, text=black, minimum size=2cm},
+      c2/.style={shape=rectangle, fill=cs2, text=black, minimum size=2cm},
+      c3/.style={shape=rectangle, fill=cs3, text=black, minimum size=2cm},
+      c4/.style={shape=rectangle, fill=cs4, text=black, minimum size=2cm},
+      ]
+      \tikzmath{
+        function use(\x,\y){
+          return (mod(\y,2)!=0) ? 
+          ((mod(\y+1,4)!=0)?(4-mod(\x,4)):(4-mod(\x+2,4))) :
+          ((mod(\y,4)==0)?(1+mod(\x,4)):(1+mod(\x+2,4)));
+        };
+        %
+        int \i, \j, \c; 
+        for \i in {0,1,2,3}{
+          for \j in {0,1,2,3}{
+            \c = use(\i,\j);
+            {
+              \path 
+                (\i,\j)                                node(\i\j)[c\c]{}
+                ($(\i\j.center)!.7!(\i\j.south east)$) node{\large \c};
+            };
+          };
+        };
+      }
+      
+      \begin{scope}[
+        every node/.style={shape=circle, draw=black, very thick, minimum size=1cm},
+        ]
+      \path 
+        (1,1) node(1){1}
+        (1,2) node(3){3}
+        (2,2) node(2){2}
+        ;
+      \end{scope}
+
+      \begin{scope}[
+        ultra thick,
+        -{Stealth[inset=0]},
+        blue!50 
+        ]
+        
+        \draw (1) -| ++(-1,-1) -| ++(3,3) -| (2);
+        \draw  (1.south east) |- (2.north);
+      \end{scope}
+    
+  \end{tikzpicture}
+\end{document}
+

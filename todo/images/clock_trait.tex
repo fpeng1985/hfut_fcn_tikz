@@ -1,0 +1,51 @@
+\documentclass[preview,border=0mm,convert={convertexe={magick},outext=.ps}]{standalone}
+\usepackage[dvipdfm]{geometry}
+%graphics
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, calc, through, shadows}
+\usepackage[caption=false,font=footnotesize]{subfig}
+
+
+\begin{document}
+\definecolor{trait-color}{RGB}{170,198,231}
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}[
+trait/.style={ rectangle, draw=black, rounded corners=2pt, fill=trait-color, drop shadow, text centered, anchor=north, text=black, text width=7cm, minimum width=3.5cm, minimum height=0.7cm},
+myarrow/.style={->, >=open triangle 90, thick},
+line/.style={-, thick},
+node distance =2cm,
+transform shape,
+scale=0.45,
+] 
+\node (Clock)[trait, rectangle split, rectangle split parts=3]
+    {
+        \textbf{Clock}
+        \nodepart{second} no data 
+        \nodepart{third} {the common procedure of clock generation}
+    };
+    
+\node (QCA)[trait, rectangle split, rectangle split parts=3]
+    at ($(Clock.south)+(0,-0.6)$)
+    {
+        \textbf{QCA Clock}
+        \nodepart{second} {QCA clock data}
+        \nodepart{third}{the 4-phased clock generation of QCA}
+    };    
+
+\node (Energy)[trait, rectangle split, rectangle split parts=3]
+    at ($(QCA.south)+(0,-0.6)$)
+    {
+        \textbf{QCADesigner-E's Clock}
+        \nodepart{second}\small{no extra data}
+        \nodepart{third}\small{the Gaussian shaped clock}
+    
+    };
+    
+\draw[myarrow] (QCA.north) -- (Clock.south);
+\draw[myarrow] (Energy.north) -- (QCA.south);
+
+\end{tikzpicture}
+\end{figure}
+\end{document}

@@ -1,0 +1,55 @@
+\documentclass[tikz]{standalone}
+%\usepackage{flowchart}
+\usepackage{ctex}
+\usetikzlibrary{positioning,shapes.geometric,shapes.misc,arrows.meta}
+
+\begin{document}
+	\begin{tikzpicture}[
+		every node/.style={
+			draw,
+			very thick,
+			inner sep=0pt,
+			outer sep=0pt,
+			minimum width=4cm,
+			%font=\small,
+			text width=3cm,
+			align=flush center,
+		},
+		node distance=.6cm,
+		terminal/.style={
+			rounded rectangle,
+			rounded rectangle arc length=180,
+			minimum height=.4cm,
+		},
+		process/.style={
+			rectangle,
+			minimum height=.8cm,
+		},
+		decision/.style={
+			diamond,
+			aspect=3,
+		},
+		%every to/.style={append after command={[draw, thick,-Latex,]}},
+		draw, very thick,-Latex,
+		]
+		\node[terminal,minimum height=.5cm](start){开始};
+		\node[process,below=of start](init){初始化种群};
+		\node[process,below=of init](fitness){计算个体适应度};
+		\node[decision,below=of fitness](stop){是否满足终止条件};
+		\node[terminal,right=of stop](finish){结束};
+		\node[process,below=of stop](select){选择};
+		\node[process,below=of select](cross){交叉};
+		\node[process,below=of cross](mutate){变异};
+		\node[process,below=of mutate](refresh){更新种群};
+		
+		\draw(start)to(init);
+		\draw(init)to(fitness);
+		\draw(fitness)to(stop);
+		\draw(stop)--(finish)node[above=3pt,draw=none,midway]{是};
+		\draw(stop)--(select)node[right=2pt,draw=none,midway,minimum size=0,text width=1]{否};
+		\draw(select)to(cross);
+		\draw(cross)to(mutate);
+		\draw(mutate)to(refresh);
+		\draw(refresh)--++(-3cm,0)|-(fitness);
+	\end{tikzpicture}
+\end{document}

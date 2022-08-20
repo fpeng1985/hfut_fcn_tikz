@@ -1,0 +1,53 @@
+\documentclass[tikz]{standalone}
+
+%graphics
+\usepackage{xcolor}
+
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, calc, through, arrows.meta}
+
+
+\begin{document}
+%\definecolor{nml-north-color}{HTML}{6666FF}
+%\definecolor{nml-south-color}{HTML}{FF6666}
+\definecolor{nml-north-color}{gray}{0.8}
+\definecolor{nml-south-color}{gray}{0.2}
+\begin{tikzpicture}
+\begin{scope}
+\shade[draw=gray,thick,top color=nml-north-color,bottom color=nml-south-color,middle color=white] (-0.5,-1) rectangle (0.5,1);
+\draw[->, line width=2pt] (0,-0.9) -- node[right]{B} (0, 0.9);
+
+\shade[draw=gray,thick,left color=nml-south-color,right color=nml-north-color,middle color=white] (1.3,-1) rectangle (2.3,1);
+\draw[->, line width=2pt] (1.4,0) -- node[above]{M} (2.2, 0);
+
+\shade[draw=gray,thick,top color=nml-north-color,bottom color=nml-south-color,middle color=white] (1.3,2) rectangle (2.3,4);
+\draw[->, line width=2pt] (1.8,2.1) -- node[right]{A} (1.8, 3.9);
+
+\shade[draw=gray,thick,top color=nml-south-color,bottom color=nml-north-color,middle color=white] (1.3,-4) rectangle (2.3,-2);
+\draw[->, line width=2pt] (1.8,-2.1) -- node[right]{C} (1.8, -3.9);
+\end{scope}
+
+\begin{scope}[xshift = 3cm, transform shape]
+    \draw[-{Latex[]}, line width = 10pt] (0,0) -- (2.5,0);
+\end{scope}
+
+\begin{scope}[xshift=6cm]
+\node(1)[shape=circle, draw]{1};
+\node(B)[above of=1, node distance=15]{B};
+\node(e2)[right of=1]{$e_2$};
+\draw[-{Stealth[round]}](e2)--(1);
+\node(0)[shape=circle, draw, right of=e2]{0};
+\node(M)[right of=0, node distance=15]{M};
+\draw[-{Stealth[round]}](e2)--(0);
+\node(e1)[above of=0]{$e_1$};
+\draw[-{Stealth[round]}](e1)--(0);
+\node(a1)[shape=circle, draw, above of=e1]{1};
+\node(A)[left of=a1, node distance=15]{A};
+\draw[-{Stealth[round]}](e1)--(a1);
+\node(e3)[below of=0]{$e_3$};
+\draw[-{Stealth[round]}](e3)--(0);
+\node(c1)[shape=circle, draw, below of=e3]{-1};
+\node(C)[left of=c1, node distance=15]{C};
+\draw[-{Stealth[round]}](e3)--(c1);
+\end{scope}
+\end{tikzpicture}
+\end{document}

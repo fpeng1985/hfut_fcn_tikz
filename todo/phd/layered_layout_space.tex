@@ -1,0 +1,30 @@
+\documentclass[tikz]{standalone}
+\usepackage{ctex}
+\begin{document}
+	\begin{tikzpicture}[
+		placement/.style={circle,draw,line width=1pt,inner sep=0pt,minimum size=1.5cm,text width=1.2cm, align=flush center,font=\footnotesize},
+		level 1/.style={level distance=2cm,sibling distance=5cm},
+		level 2/.style={level distance=4cm,sibling distance = 1.6cm}
+		]
+		
+		\node(f)[placement]{首层布局方案}
+			child{node[placement]{2层布局方案1}
+				child{node[placement]{3层布局方案1}}
+				child{node{......}}
+				child{node[placement]{3层布局方案m1}}
+			}
+			child{node[placement]{2层布局方案2}
+				child{node[placement]{3层布局方案1}}
+				child{node{......}}
+				child{node[placement]{3层布局方案m2}}
+			}
+			child{node{......}}
+			child{node[placement]{2层布局方案n}
+				child{node[placement]{3层布局方案1}}
+				child{node{......}}
+				child{node[placement]{3层布局方案mn}}
+			}
+		;
+		\node at([yshift=-7cm]f.south) {\huge{......}};
+	\end{tikzpicture}
+\end{document}

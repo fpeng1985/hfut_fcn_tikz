@@ -1,0 +1,70 @@
+\documentclass[tikz]{standalone}
+\usepackage{ctex}
+\usepackage{xcolor}
+\definecolor{fixed-color}{RGB}{241, 242, 246}
+\definecolor{varied-color}{RGB}{140,140,140}
+\usetikzlibrary{shapes.geometric, shapes.misc, arrows.meta, positioning}
+
+\begin{document}
+    \begin{tikzpicture}[
+		every node/.style={
+			draw,
+			very thick,
+			inner sep=0pt,
+			outer sep=0pt,
+			minimum width=4cm,
+			font=\small,
+			text width=3cm,
+			align=flush center,
+		},
+		node distance=.6cm,
+		terminal/.style={
+			rounded rectangle,
+			rounded rectangle arc length=180,
+			minimum height=.4cm,
+		},
+		process/.style={
+			rectangle,
+			minimum height=.8cm,
+		},
+		decision/.style={
+			diamond,
+			aspect=3,
+		},
+		every label/.style={
+			minimum width=0pt,
+			draw=none,
+			fill=none,
+		},
+		draw, very thick,-Latex,
+        fixed/.style={
+            draw=fixed-color!80!black,
+            fill=fixed-color,
+        },
+        varied/.style={
+            draw=varied-color!80!black,
+            fill=varied-color,
+        },
+]
+	\node[terminal](start){开始};
+	\node[process,varied,below=of start] (init_sample){ 生成电路激励数据\\生成时钟信号};
+	\node[process,fixed,below=of init_sample] (init_design){ 设置运行时数据};
+
+	\node[process,fixed, below=of init_design]  (current_input)  { 加载当前激励和时钟};
+	\node[process,varied, below=of current_input]  (current_iteration){ 利用算法模型计算当前系统状态};
+	\node[process,fixed, below=of current_iteration]  (current_output) { 保存当前状态结果};
+	\node[decision,fixed, below=of current_output] (termination) { 是否达到结束条件?};
+	\node[process,fixed, below=of termination] (output) { 生成输出波形};
+	\node[terminal,below=of output](end){结束};
+
+	\draw(start)--(init_sample);
+	\draw  (init_sample)  --  (init_design);
+	\draw  (init_design) -- (current_input);
+	\draw  (current_input)   -- (current_iteration);
+	\draw  (current_iteration)  -- (current_output);
+	\draw  (current_output)  -- (termination);
+	\draw  (termination.east)--++(1,0) |- (current_input)node[left,pos=.25,draw=none,minimum size=.5cm,text width=2]{否} ;
+	\draw  (termination)--(output)node[right,midway,draw=none,minimum size=.5cm,text width=2]{是};
+	\draw(output)--(end);
+    \end{tikzpicture}
+\end{document}

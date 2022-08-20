@@ -1,0 +1,44 @@
+\documentclass[tikz]{standalone}
+\usepackage{ctex}
+
+%graphics
+\usepackage{xcolor}
+
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, calc, through, decorations.pathreplacing}
+
+
+\begin{document}
+ 
+
+\definecolor{nml-north-color}{HTML}{6666FF}
+\definecolor{nml-south-color}{HTML}{FF6666}
+
+\begin{tikzpicture}[scale=0.9, transform shape]
+
+\draw[->, line width=1pt] (-1,0) -- (11,0);
+\draw[->, line width=1pt] (0,-1) -- (0,3);
+
+\draw[line width=1pt, dashed] (3,0) -- (3,3);
+\draw[line width=1pt, dashed] (6,0) -- (6,3);
+\draw[line width=1pt, dashed] (9,0) -- (9,3);
+
+\node at (0.3, -0.3) {$t_0$};
+\node at (3, -0.3) {$t_1$};
+\node at (6, -0.3) {$t_2$};
+\node at (9, -0.3) {$t_3$};
+\node at (10.5, -0.3) {$t$};
+
+\draw[line width=2pt] (0,0) -- (1,2) -- (6,2) -- (6,0) -- (9,0);
+\draw[line width=2pt, dashed, color=black!60] (0,2) -- (1,0) -- (6,0) -- (6,2) -- (9,2);
+
+\node at (-0.8, 0.2) {$clk = 0$};
+\node at (-0.8, 2) {$clk = 1$};
+\node at (1.7,2.3) {$clk$};
+\node[color=black!60] at (7.5,2.3) {$H_x$};
+
+\draw[decorate, decoration=brace] (0,3.2) -- node[above]{转换阶段}(3,3.2);
+\draw[decorate, decoration=brace] (3,3.2) -- node[above]{保持阶段}(6,3.2);
+\draw[decorate, decoration=brace] (6,3.2) -- node[above]{重置阶段}(9,3.2);
+\end{tikzpicture}
+\end{document}
+

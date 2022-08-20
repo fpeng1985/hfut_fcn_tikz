@@ -1,0 +1,89 @@
+\documentclass[preview,convert={convertexe={magick},outext=.ps}]{standalone}
+
+%graphics
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, calc, through}
+\usepackage[caption=false,font=footnotesize]{subfig}
+
+\colorlet{dot-color}{black!80}
+%\colorlet{dot-color}{red!80!black!70}
+\tikzset{
+    pics/cell/.style = {
+        code = {%
+        \coordinate (-center) at (0,0);
+        
+        \fill +(-0.9,-0.9) coordinate(-sw) 
+           -- +(-0.9, 0.9) coordinate(-nw)
+           -- +( 0.9, 0.9) coordinate(-ne)
+           -- +( 0.9,-0.9) coordinate(-se)
+           -- cycle;
+           
+        \draw[white] (-center) let \p1=($(-center)!0.7!(0,0.9)$) in circle ({veclen(\x1,\y1)});
+           
+        \coordinate (-swo) at ($ (-center)!0.5!(-sw) $);
+        \coordinate (-nwo) at ($ (-center)!0.5!(-nw) $);
+        \coordinate (-neo) at ($ (-center)!0.5!(-ne) $);
+        \coordinate (-seo) at ($ (-center)!0.5!(-se) $);
+        
+        \fill[white] (-swo) let \p1=($ (-center)!.2!(-swo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-nwo) let \p1=($ (-center)!.2!(-nwo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-neo) let \p1=($ (-center)!.2!(-neo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-seo) let \p1=($ (-center)!.2!(-seo) $) in circle ({veclen(\x1,\y1)});
+        
+        \coordinate (-wo) at ($ (-center)!0.7!(-0.9,0) $);
+        \coordinate (-eo) at ($ (-center)!0.7!( 0.9,0) $);
+        \coordinate (-no) at ($ (-center)!0.7!(0, 0.9) $);
+        \coordinate (-so) at ($ (-center)!0.7!(0,-0.9) $);
+        
+        \fill[white] (-wo) let \p1=($ (-center)!.2!(-wo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-eo) let \p1=($ (-center)!.2!(-eo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-no) let \p1=($ (-center)!.2!(-no) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-so) let \p1=($ (-center)!.2!(-so) $) in circle ({veclen(\x1,\y1)});
+        
+        \ifnum#1=1\relax
+            \fill[dot-color] (-swo) let \p1=($ (-center)!.15!(-swo) $) in circle ({veclen(\x1,\y1)});
+            \fill[dot-color] (-neo) let \p1=($ (-center)!.15!(-neo) $) in circle ({veclen(\x1,\y1)});
+        \else
+            \ifnum#1=-1\relax
+                \fill[dot-color] (-nwo) let \p1=($ (-center)!.15!(-nwo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-seo) let \p1=($ (-center)!.15!(-seo) $) in circle ({veclen(\x1,\y1)});
+            \else
+                \ifnum#1=0\relax
+                    \fill[dot-color] (-eo) let \p1=($ (-center)!.15!(-eo) $) in circle ({veclen(\x1,\y1)});
+                    \fill[dot-color] (-wo) let \p1=($ (-center)!.15!(-wo) $) in circle ({veclen(\x1,\y1)});
+                \else
+                    \fill[dot-color] (-no) let \p1=($ (-center)!.15!(-no) $) in circle ({veclen(\x1,\y1)});
+                    \fill[dot-color] (-so) let \p1=($ (-center)!.15!(-so) $) in circle ({veclen(\x1,\y1)});
+                \fi
+            \fi
+        \fi
+        
+        
+        \coordinate (-south) at ($ (-sw)!.5!(-se) $);
+        \coordinate (-north) at ($ (-nw)!.5!(-ne) $);
+        \coordinate (-west)  at ($ (-sw)!.5!(-nw) $);
+        \coordinate (-east)  at ($ (-se)!.5!(-ne) $);
+        }
+    },
+    pics/cell/.default={0}
+}
+
+
+\begin{document}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\pic[gray!50] (cell2) at (0,0) {cell=-1};
+\node [below] at (cell2-south) {{\normalsize $P=-1$}};
+\pic[gray!50] (cell1) at (3,0) {cell=1};
+\node [below] at (cell1-south) {{\normalsize $P=+1$}};
+\pic[gray!50] (cell3) at (6,0) {cell=0};
+\node [below] at (cell3-south) {{\normalsize $P=0$}};
+\pic[gray!50] (cell4) at (9,0) {cell=2};
+\node [below] at (cell4-south) {{\normalsize $P=0$}};
+\end{tikzpicture}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,62 @@
+\documentclass[tikz]{standalone}
+\colorlet{tile_color_1}{lightgray!20}
+\colorlet{tile_color_2}{lightgray!50}
+\colorlet{tile_color_3}{lightgray}
+\colorlet{tile_color_4}{gray}
+\usetikzlibrary{arrows.meta}
+\def\sz{1cm}
+\usetikzlibrary{math}
+\tikzmath{
+	%USE Clocking Scheme
+	function use_val(\x,\y){
+		return (mod(\y,2)!=0) ? 
+		((mod(\y+1,4)!=0)?(4-mod(\x,4)):(4-mod(\x+2,4))) :
+		((mod(\y,4)==0)?(1+mod(\x,4)):(1+mod(\x+2,4)));
+	};
+	%
+	function use(\row, \col) {
+		\row = \row-1;
+		\col = \col-1;
+		int \i, \j, \c; 
+		for \i in {0,...,\row}{
+			for \j in {0,...,\col}{
+				\c = use_val(\j, \i);
+				{ \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
+			};
+		};
+	};
+}
+\begin{document}
+	\begin{tikzpicture}[
+		inner sep=0pt,
+		outer sep=0pt,
+		minimum size=\sz,
+		v/.style={circle, draw, thick,minimum size=\sz*.8},
+		y={(0,-\sz)},
+		]
+		\begin{scope}
+			\foreach \x in {0,...,4}
+				\foreach \y in {0,...,4}
+					\node[draw]at(\x,\y){};
+			;
+			\foreach \y in {1,...,4} \node[fill=black]at(0,\y){};
+			\foreach \y in {0,...,2} \node[fill=black]at(2,\y){};
+			\node[v](s)at(0,0){S};
+			\node[v](t)at(4,0){T};
+			\draw[-Stealth,very thick,rounded corners=1pt](s)-|++(1,3)--++(2,0)|-(t);
+		\end{scope}
+	
+		\begin{scope}[xshift=\sz*6,	]
+			\tikzmath{use(5,5);}
+			\foreach \x in {0,...,4}
+				\foreach \y in {0,...,4}
+					\node[xshift=\sz*.4,yshift=-\sz*.4,minimum size=0] at(\x\y){\pgfmathparse{int(use_val(\x,\y))}\tiny\pgfmathresult};
+			;
+			\foreach \y in {1,...,4} \node[fill=black]at(0,\y){};
+			\foreach \y in {0,...,2} \node[fill=black]at(2,\y){};
+			\node[v](s)at(0,0){S};
+			\node[v](t)at(4,0){T};
+			\draw[-Stealth,very thick,rounded corners=1pt](s)-|++(1,4)-|++(t);
+		\end{scope}
+	\end{tikzpicture}
+\end{document}

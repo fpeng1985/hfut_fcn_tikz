@@ -1,0 +1,57 @@
+\documentclass[tikz]{standalone}
+
+\definecolor{cd-color}{RGB}{40,40,180}
+\definecolor{cf-color}{RGB}{120,190,180}
+\definecolor{xd-color}{RGB}{50,140,50}
+\definecolor{arc-color}{RGB}{195,128,131}
+
+\tikzset{
+    c/.pic={
+        \path[pic actions](0,0)circle[radius=2pt];
+    }
+}
+
+\tikzset{
+    cstyle/.style={
+        draw=cd-color, fill=cf-color,
+    }
+}
+
+\tikzset{
+    x/.pic={
+        \draw[pic actions] (-.7pt,-.7pt)--(.7pt,.7pt) (-.7pt,.7pt)--(.7pt,-.7pt);
+    }
+}
+
+\tikzset{
+    xstyle/.style={
+        draw=xd-color,
+    }
+}
+
+\begin{document}
+\begin{tikzpicture}
+
+\foreach \r in {45,90,135,180} 
+    \draw (0,0) -- (\r:4.3);
+
+\foreach \angle in {0,90,135}
+    \draw[arc-color,thick] (\angle:4) arc[start angle=\angle, delta angle=45, radius=4] node[sloped, midway, fill=white, font=\tiny]{$45^\circ$};
+
+\pic[draw=black, fill=red]{c};
+\foreach \r in {45,135,225,315} {
+    \begin{scope}[rotate=\r]
+        \pic foreach \x/\y in {1/0, 2/0, 3/0, 1/1, 2/1, 1/2 } [cstyle] at (\x,\y) {c};
+    \end{scope}
+}
+
+\begin{scope}[rotate=135]
+    \foreach \x in {-.5,.5} 
+        \foreach \y in {.5, 1.5, 2.5}
+            \pic[xd-color] at(\x,\y) {x};
+            
+    \pic[black] at (1.5,1.5) {x};
+\end{scope}
+    
+\end{tikzpicture}
+\end{document}

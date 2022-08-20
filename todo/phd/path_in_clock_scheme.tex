@@ -1,0 +1,75 @@
+\documentclass[tikz]{standalone}
+
+
+%graphics
+\usepackage{xcolor}
+\colorlet{tile_color_1}{lightgray!20}
+\colorlet{tile_color_2}{lightgray!50}
+\colorlet{tile_color_3}{lightgray}
+\colorlet{tile_color_4}{gray}
+
+\usepackage{tikz}
+\def\sz{1.2cm}
+\usetikzlibrary{math}
+\tikzmath{
+	%USE Clocking Scheme
+	function use_val(\x,\y){
+		return (mod(\y,2)!=0) ? ((mod(\y+1,4)!=0)?(1+mod(\x+1,4)):(1+mod(\x+3,4))):((mod(\y,4)==0)?(4-mod(\x+3,4)):(4-mod(\x+1,4)));
+	};
+	%
+	function use(\row, \col) {
+		\row = \row-1;
+		\col = \col-1;
+		int \i, \j, \c; 
+		for \i in {0,...,\row}{
+			for \j in {0,...,\col}{
+				\c = use_val(\j, \i);
+				{ \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
+			};
+		};
+	};
+	%TDD Clocking Scheme
+	function tdd_val(\x,\y){
+		return (mod(\y, 2)!=0) ? ((mod(\y+1, 4)!=0)?(1+mod(\x+1, 4)):(1+mod(\x+3, 4))):((mod(\y, 4)==0)?(1+mod(\x, 4)):(1+mod(\x+2, 4)));
+	};
+	%
+	function tdd(\row, \col) {
+		\row = \row-1;
+		\col = \col-1;
+		int \i, \j, \c; 
+		for \i in {0,...,\row}{
+			for \j in {0,...,\col}{
+				\c = tdd_val(\j, \i);
+				{ \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
+			};
+		};
+	};
+}
+
+\begin{document}
+    
+
+
+\begin{tikzpicture}[
+	x=\sz,
+	y=\sz,
+	minimum size=\sz,
+	inner sep=0pt,
+	outer sep=0pt,
+]
+
+\begin{scope}
+	\tikzmath{use(4,4);}
+	\draw[line width=2pt, ->] ([yshift=5pt]0,3)--++([xshift=5pt]3,0)--++([yshift=-5pt]0,-3);
+	\draw[line width=2pt, ->]( [yshift=-5pt]0,3)--++(1,0)--(1,1)--++([xshift=-5pt]2,0)--+(0,-1);
+\end{scope}
+
+\begin{scope}[xshift=6cm]
+	\tikzmath{tdd(4,4);}
+	\draw[line width=2pt,->] ([xshift=-5pt]0,0)--++(0,3)--++(3,0);
+	\draw[line width=2pt,->] ([yshift=-5pt]0,0)--++(3,0)--++(0,3);
+
+\end{scope}
+
+\end{tikzpicture}
+\end{document}

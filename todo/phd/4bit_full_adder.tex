@@ -1,0 +1,555 @@
+\documentclass[preview]{standalone}
+\usepackage[dvipdfm]{geometry}
+%\usepackage{ctex}
+%graphics
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, calc, through}
+\usepackage[caption=false,font=footnotesize]{subfig}
+
+\colorlet{dot-color}{black!80}
+\tikzset{
+    pics/cell/.style = {
+        code = {%
+        \coordinate (-center) at (0,0);
+        
+        \fill +(-0.495,-0.495) coordinate(-sw) 
+           -- +(-0.495, 0.495) coordinate(-nw)
+           -- +( 0.495, 0.495) coordinate(-ne)
+           -- +( 0.495,-0.495) coordinate(-se)
+           -- cycle;
+        \coordinate (-swo) at ($ (-center)!0.5!(-sw) $);
+        \coordinate (-nwo) at ($ (-center)!0.5!(-nw) $);
+        \coordinate (-neo) at ($ (-center)!0.5!(-ne) $);
+        \coordinate (-seo) at ($ (-center)!0.5!(-se) $);
+        
+        \coordinate (-south) at ($ (-sw)!.5!(-se) $);
+        \coordinate (-north) at ($ (-nw)!.5!(-ne) $);
+        \coordinate (-west)  at ($ (-sw)!.5!(-nw) $);
+        \coordinate (-east)  at ($ (-se)!.5!(-ne) $);
+        
+        \fill[white] (-swo) let \p1=($ (-center)!.5!(-swo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-nwo) let \p1=($ (-center)!.5!(-nwo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-neo) let \p1=($ (-center)!.5!(-neo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-seo) let \p1=($ (-center)!.5!(-seo) $) in circle ({veclen(\x1,\y1)});
+        
+        \ifnum#1=1\relax
+            \fill[dot-color] (-swo) let \p1=($ (-center)!.32!(-swo) $) in circle ({veclen(\x1,\y1)});
+            \fill[dot-color] (-neo) let \p1=($ (-center)!.32!(-neo) $) in circle ({veclen(\x1,\y1)});
+        \else
+            \ifnum#1=-1\relax
+                \fill[dot-color] (-nwo) let \p1=($ (-center)!.32!(-nwo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-seo) let \p1=($ (-center)!.32!(-seo) $) in circle ({veclen(\x1,\y1)});
+            \else
+                \fill[dot-color] (-swo) let \p1=($ (-center)!.22!(-swo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-nwo) let \p1=($ (-center)!.22!(-nwo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-neo) let \p1=($ (-center)!.22!(-neo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-seo) let \p1=($ (-center)!.22!(-seo) $) in circle ({veclen(\x1,\y1)});
+            \fi
+        \fi
+        }
+    },
+    pics/cell/.default={0}
+}
+
+% \definecolor{clock0}{HTML}{86E291}
+% \definecolor{clock1}{HTML}{FFA5FA}
+% \definecolor{clock2}{HTML}{00C8BC}
+% \definecolor{clock3}{HTML}{F2F2F2}
+% \definecolor{input}{HTML}{008DC8}
+% \definecolor{output}{HTML}{E28686}
+% \definecolor{fixed}{HTML}{000000}
+
+\definecolor{clock0}{RGB}{89,89,91}
+\definecolor{clock1}{RGB}{129,130,132}
+\definecolor{clock2}{RGB}{210,210,212}
+\definecolor{clock3}{RGB}{168,169,173}
+\definecolor{input}{RGB}{230,230,230}
+\definecolor{output}{RGB}{40,40,40}
+\definecolor{fixed}{HTML}{000000}
+\begin{document}
+
+
+\centering
+\begin{tikzpicture}[scale=0.27,transform shape]
+
+%0
+\begin{scope}
+
+\pic[clock2] at (0,0) {cell};
+
+\pic[clock2] at (1,0) {cell};
+
+\pic(A)[input] at (2,6) {cell};
+\node[above,scale=3] at (A-north) {A0};
+\pic[clock0] at (2,5) {cell};
+\pic[clock0] at (2,4) {cell};
+\pic[clock0] at (2,3) {cell};
+\pic[clock0] at (2,2) {cell};
+\pic[clock0] at (2,1) {cell};
+\pic[clock2] at (2,0) {cell};
+\pic[clock0] at (2,-1) {cell};
+\pic[clock0] at (2,-2) {cell};
+\pic[clock1] at (2,-3) {cell};
+
+\pic[clock0] at (3,3) {cell};
+\pic[clock2] at (3,0) {cell};
+\pic[clock1] at (3,-3) {cell};
+
+\pic[clock0] at (4,3) {cell};
+\pic[clock2] at (4,0) {cell};
+\pic[clock2] at (4,-3) {cell};
+
+\pic(B)[input] at (5,6){cell};
+\node[above,scale=3] at (B-north) {B0};
+\pic[clock0] at (5,5) {cell};
+\pic[clock0] at (5,4) {cell};
+\pic[clock1] at (5,3) {cell};
+\pic[clock1] at (5,2) {cell};
+\pic[clock1] at (5,1) {cell};
+\pic[clock2] at (5,0) {cell};
+\pic[clock2] at (5,-3) {cell};
+
+\pic[clock0] at (6,6) {cell};
+\pic[clock0] at (6,3) {cell};
+\pic[clock2] at (6,0) {cell};
+\pic[clock2] at (6,-1) {cell};
+\pic[clock3] at (6,-2) {cell};
+
+\pic[clock0] at (7,6) {cell};
+\pic[clock0] at (7,3) {cell};
+\pic[clock3] at (7,-1) {cell};
+\pic[clock3] at (7,-3) {cell};
+\pic[clock3] at (7,-4) {cell};
+
+\pic[clock1] at (8,6) {cell};
+\pic[clock0] at (8,3) {cell};
+\pic[clock3] at (8,-2) {cell};
+
+\pic[clock1] at (9,6) {cell};
+\pic[clock2] at (9,5) {cell};
+\pic[clock2] at (9,4) {cell};
+\pic[clock2] at (9,3) {cell};
+\pic[clock0] at (9,3) {cell};
+\pic[clock2] at (9,2) {cell};
+\pic[clock2] at (9,1) {cell};
+\pic[clock2] at (9,0) {cell};
+\pic[clock2] at (9,-1) {cell};
+\pic[clock2] at (9,-3) {cell};
+
+
+\pic[clock0] at (10,3) {cell};
+\pic[clock2] at (10,-3) {cell};
+
+\pic[clock0] at (11,3) {cell};
+\pic[clock2] at (11,-3) {cell};
+
+\pic(C)[input] at (12,3) {cell};
+\node[above,scale=3] at (C-north) {C0};
+\pic[clock0] at (12,2) {cell};
+\pic[clock0] at (12,1) {cell};
+\pic[clock1] at (12,0) {cell};
+\pic[clock1] at (12,-1) {cell};
+\pic[clock1] at (12,-2) {cell};
+\pic[clock2] at (12,-3) {cell};
+
+\end{scope}
+
+%1
+\begin{scope}[shift={+(-13,-6)}]
+
+\pic[clock1] at (0,0) {cell};
+
+\pic[clock1] at (1,0) {cell};
+
+\pic[clock2] at (2,6) {cell};
+\pic[clock3] at (2,5) {cell};
+\pic[clock3] at (2,4) {cell};
+\pic[clock3] at (2,3) {cell};
+\pic[clock3] at (2,2) {cell};
+\pic[clock3] at (2,1) {cell};
+\pic[clock1] at (2,0) {cell};
+\pic[clock3] at (2,-1) {cell};
+\pic[clock3] at (2,-2) {cell};
+\pic[clock0] at (2,-3) {cell};
+
+\pic[clock3] at (3,3) {cell};
+\pic[clock1] at (3,0) {cell};
+\pic[clock0] at (3,-3) {cell};
+
+\pic[clock3] at (4,3) {cell};
+\pic[clock1] at (4,0) {cell};
+\pic[clock1] at (4,-3) {cell};
+
+\pic[clock2] at (5,6){cell};
+\pic[clock3] at (5,5) {cell};
+\pic[clock3] at (5,4) {cell};
+\pic[clock0] at (5,3) {cell};
+\pic[clock0] at (5,2) {cell};
+\pic[clock0] at (5,1) {cell};
+\pic[clock1] at (5,0) {cell};
+\pic[clock1] at (5,-3) {cell};
+
+\pic[clock3] at (6,6) {cell};
+\pic[clock3] at (6,3) {cell};
+\pic[clock1] at (6,0) {cell};
+\pic[clock1] at (6,-1) {cell};
+\pic[clock2] at (6,-2) {cell};
+
+\pic[clock3] at (7,6) {cell};
+\pic[clock3] at (7,3) {cell};
+\pic[clock2] at (7,-1) {cell};
+\pic[clock2] at (7,-3) {cell};
+\pic[clock2] at (7,-4) {cell};
+
+\pic[clock0] at (8,6) {cell};
+\pic[clock3] at (8,3) {cell};
+\pic[clock2] at (8,-2) {cell};
+
+\pic[clock0] at (9,6) {cell};
+\pic[clock1] at (9,5) {cell};
+\pic[clock1] at (9,4) {cell};
+\pic[clock1] at (9,3) {cell};
+\pic[clock3] at (9,3) {cell};
+\pic[clock1] at (9,2) {cell};
+\pic[clock1] at (9,1) {cell};
+\pic[clock1] at (9,0) {cell};
+\pic[clock1] at (9,-1) {cell};
+\pic[clock1] at (9,-3) {cell};
+
+
+\pic[clock3] at (10,3) {cell};
+\pic[clock1] at (10,-3) {cell};
+
+\pic[clock3] at (11,3) {cell};
+\pic[clock1] at (11,-3) {cell};
+
+\pic[clock3] at (12,3) {cell};
+\pic[clock3] at (12,2) {cell};
+\pic[clock3] at (12,1) {cell};
+\pic[clock0] at (12,0) {cell};
+\pic[clock0] at (12,-1) {cell};
+\pic[clock0] at (12,-2) {cell};
+\pic[clock1] at (12,-3) {cell};
+
+\end{scope}
+
+%2
+\begin{scope}[shift={+(-26,-12)}]
+
+\pic[clock0] at (0,0) {cell};
+
+\pic[clock0] at (1,0) {cell};
+
+\pic[clock1] at (2,6) {cell};
+\pic[clock2] at (2,5) {cell};
+\pic[clock2] at (2,4) {cell};
+\pic[clock2] at (2,3) {cell};
+\pic[clock2] at (2,2) {cell};
+\pic[clock2] at (2,1) {cell};
+\pic[clock0] at (2,0) {cell};
+\pic[clock2] at (2,-1) {cell};
+\pic[clock2] at (2,-2) {cell};
+\pic[clock3] at (2,-3) {cell};
+
+\pic[clock2] at (3,3) {cell};
+\pic[clock0] at (3,0) {cell};
+\pic[clock3] at (3,-3) {cell};
+
+\pic[clock2] at (4,3) {cell};
+\pic[clock0] at (4,0) {cell};
+\pic[clock0] at (4,-3) {cell};
+
+\pic[clock1] at (5,6){cell};
+\pic[clock2] at (5,5) {cell};
+\pic[clock2] at (5,4) {cell};
+\pic[clock3] at (5,3) {cell};
+\pic[clock3] at (5,2) {cell};
+\pic[clock3] at (5,1) {cell};
+\pic[clock0] at (5,0) {cell};
+\pic[clock0] at (5,-3) {cell};
+
+\pic[clock2] at (6,6) {cell};
+\pic[clock2] at (6,3) {cell};
+\pic[clock0] at (6,0) {cell};
+\pic[clock0] at (6,-1) {cell};
+\pic[clock1] at (6,-2) {cell};
+
+\pic[clock2] at (7,6) {cell};
+\pic[clock2] at (7,3) {cell};
+\pic[clock1] at (7,-1) {cell};
+\pic[clock1] at (7,-3) {cell};
+\pic[clock1] at (7,-4) {cell};
+
+\pic[clock3] at (8,6) {cell};
+\pic[clock2] at (8,3) {cell};
+\pic[clock1] at (8,-2) {cell};
+
+\pic[clock3] at (9,6) {cell};
+\pic[clock0] at (9,5) {cell};
+\pic[clock0] at (9,4) {cell};
+\pic[clock0] at (9,3) {cell};
+\pic[clock2] at (9,3) {cell};
+\pic[clock0] at (9,2) {cell};
+\pic[clock0] at (9,1) {cell};
+\pic[clock0] at (9,0) {cell};
+\pic[clock0] at (9,-1) {cell};
+\pic[clock0] at (9,-3) {cell};
+
+
+\pic[clock2] at (10,3) {cell};
+\pic[clock0] at (10,-3) {cell};
+
+\pic[clock2] at (11,3) {cell};
+\pic[clock0] at (11,-3) {cell};
+
+\pic[clock2] at (12,3) {cell};
+\pic[clock2] at (12,2) {cell};
+\pic[clock2] at (12,1) {cell};
+\pic[clock3] at (12,0) {cell};
+\pic[clock3] at (12,-1) {cell};
+\pic[clock3] at (12,-2) {cell};
+\pic[clock0] at (12,-3) {cell};
+
+\end{scope}
+
+%3
+\begin{scope}[shift={+(-39,-18)}]
+
+\pic[clock3] at (0,0) {cell};
+
+\pic[clock3] at (1,0) {cell};
+
+\pic[clock0] at (2,6) {cell};
+\pic[clock1] at (2,5) {cell};
+\pic[clock1] at (2,4) {cell};
+\pic[clock1] at (2,3) {cell};
+\pic[clock1] at (2,2) {cell};
+\pic[clock1] at (2,1) {cell};
+\pic[clock3] at (2,0) {cell};
+\pic[clock1] at (2,-1) {cell};
+\pic[clock1] at (2,-2) {cell};
+\pic[clock2] at (2,-3) {cell};
+
+\pic[clock1] at (3,3) {cell};
+\pic[clock3] at (3,0) {cell};
+\pic[clock2] at (3,-3) {cell};
+
+\pic[clock1] at (4,3) {cell};
+\pic[clock3] at (4,0) {cell};
+\pic[clock3] at (4,-3) {cell};
+
+\pic[clock0] at (5,6){cell};
+\pic[clock1] at (5,5) {cell};
+\pic[clock1] at (5,4) {cell};
+\pic[clock2] at (5,3) {cell};
+\pic[clock2] at (5,2) {cell};
+\pic[clock2] at (5,1) {cell};
+\pic[clock3] at (5,0) {cell};
+\pic[clock3] at (5,-3) {cell};
+
+\pic[clock1] at (6,6) {cell};
+\pic[clock1] at (6,3) {cell};
+\pic[clock3] at (6,0) {cell};
+\pic[clock3] at (6,-1) {cell};
+\pic[clock0] at (6,-2) {cell};
+
+\pic[clock1] at (7,6) {cell};
+\pic[clock1] at (7,3) {cell};
+\pic[clock0] at (7,-1) {cell};
+\pic[clock0] at (7,-3) {cell};
+\pic[clock0] at (7,-4) {cell};
+
+\pic[clock2] at (8,6) {cell};
+\pic[clock1] at (8,3) {cell};
+\pic[clock0] at (8,-2) {cell};
+
+\pic[clock2] at (9,6) {cell};
+\pic[clock3] at (9,5) {cell};
+\pic[clock3] at (9,4) {cell};
+\pic[clock3] at (9,3) {cell};
+\pic[clock1] at (9,3) {cell};
+\pic[clock3] at (9,2) {cell};
+\pic[clock3] at (9,1) {cell};
+\pic[clock3] at (9,0) {cell};
+\pic[clock3] at (9,-1) {cell};
+\pic[clock3] at (9,-3) {cell};
+
+
+\pic[clock1] at (10,3) {cell};
+\pic[clock3] at (10,-3) {cell};
+
+\pic[clock1] at (11,3) {cell};
+\pic[clock3] at (11,-3) {cell};
+
+\pic[clock1] at (12,3) {cell};
+\pic[clock1] at (12,2) {cell};
+\pic[clock1] at (12,1) {cell};
+\pic[clock2] at (12,0) {cell};
+\pic[clock2] at (12,-1) {cell};
+\pic[clock2] at (12,-2) {cell};
+\pic[clock3] at (12,-3) {cell};
+
+\end{scope}
+
+\begin{scope}
+\pic[clock0] at (7,-5) {cell};
+\pic[clock0] at (7,-6) {cell};
+\pic[clock1] at (7,-7) {cell};
+\pic[clock1] at (7,-8) {cell};
+\pic[clock2] at (7,-9) {cell};
+\pic[clock2] at (7,-10) {cell};
+\pic[clock3] at (7,-11) {cell};
+\pic[clock3] at (7,-12) {cell};
+\pic[clock0] at (7,-13) {cell};
+\pic[clock0] at (7,-14) {cell};
+\pic[clock1] at (7,-15) {cell};
+\pic[clock1] at (7,-16) {cell};
+\pic[clock2] at (7,-17) {cell};
+\pic[clock2] at (7,-18) {cell};
+\pic[clock3] at (7,-19) {cell};
+\pic[clock3] at (7,-20) {cell};
+\pic[clock0] at (7,-21) {cell};
+\pic[clock0] at (7,-22) {cell};
+\pic(S0)[output] at (7,-23) {cell};
+\node[below,scale=3] at (S0-south) {S0};
+
+\pic[clock3] at (-6,-11) {cell};
+\pic[clock3] at (-6,-12) {cell};
+\pic[clock0] at (-6,-13) {cell};
+\pic[clock0] at (-6,-14) {cell};
+\pic[clock1] at (-6,-15) {cell};
+\pic[clock1] at (-6,-16) {cell};
+\pic[clock2] at (-6,-17) {cell};
+\pic[clock2] at (-6,-18) {cell};
+\pic[clock3] at (-6,-19) {cell};
+\pic[clock3] at (-6,-20) {cell};
+\pic[clock0] at (-6,-21) {cell};
+\pic[clock0] at (-6,-22) {cell};
+\pic(S1)[output] at (-6,-23) {cell};
+\node[below,scale=3] at (S1-south) {S1};
+
+\pic[clock2] at (-19,-17) {cell};
+\pic[clock2] at (-19,-18) {cell};
+\pic[clock3] at (-19,-19) {cell};
+\pic[clock3] at (-19,-20) {cell};
+\pic[clock0] at (-19,-21) {cell};
+\pic[clock0] at (-19,-22) {cell};
+\pic(S2)[output] at (-19,-23) {cell};
+\node[below,scale=3] at (S2-south) {S2};
+
+\pic(S3)[output] at (-32,-23) {cell};
+\node[below,scale=3] at (S3-south) {S3};
+
+\pic[clock3] at (-40,-18) {cell};
+\pic[clock0] at (-40,-19) {cell};
+\pic[clock0] at (-40,-20) {cell};
+\pic[clock0] at (-40,-21) {cell};
+\pic[clock0] at (-40,-22) {cell};
+\pic(C3)[output] at (-40,-23) {cell};
+\node[below,scale=3] at (C3-south) {C3};
+
+\pic[clock2] at (-1,0) {cell};
+\pic[clock2] at (-1,-1) {cell};
+\pic[clock2] at (-1,-2) {cell};
+
+\pic[clock1] at (-14,-6) {cell};
+\pic[clock1] at (-14,-7) {cell};
+\pic[clock1] at (-14,-8) {cell};
+
+\pic[clock0] at (-27,-12) {cell};
+\pic[clock0] at (-27,-13) {cell};
+\pic[clock0] at (-27,-14) {cell};
+
+\pic(A1)[input] at (-11,6) {cell};
+\node[above,scale=3] at (A1-north) {A1};
+\pic[clock0] at (-11,5) {cell};
+\pic[clock0] at (-11,4) {cell};
+\pic[clock1] at (-11,3) {cell};
+\pic[clock1] at (-11,2) {cell};
+\pic[clock2] at (-11,1) {cell};
+
+\pic(B1)[input] at (-8,6) {cell};
+\node[above,scale=3] at (B1-north) {B1};
+\pic[clock0] at (-8,5) {cell};
+\pic[clock0] at (-8,4) {cell};
+\pic[clock1] at (-8,3) {cell};
+\pic[clock1] at (-8,2) {cell};
+\pic[clock2] at (-8,1) {cell};
+
+\pic(A2)[input] at (-24,6) {cell};
+\node[above,scale=3] at (A2-north) {A2};
+\pic[clock0] at (-24,5) {cell};
+\pic[clock0] at (-24,4) {cell};
+\pic[clock1] at (-24,3) {cell};
+\pic[clock1] at (-24,2) {cell};
+\pic[clock2] at (-24,1) {cell};
+\pic[clock2] at (-24,0) {cell};
+\pic[clock3] at (-24,-1) {cell};
+\pic[clock3] at (-24,-2) {cell};
+\pic[clock0] at (-24,-3) {cell};
+\pic[clock0] at (-24,-4) {cell};
+\pic[clock1] at (-24,-5) {cell};
+
+\pic(B2)[input] at (-21,6) {cell};
+\node[above,scale=3] at (B2-north) {B2};
+\pic[clock0] at (-21,5) {cell};
+\pic[clock0] at (-21,4) {cell};
+\pic[clock1] at (-21,3) {cell};
+\pic[clock1] at (-21,2) {cell};
+\pic[clock2] at (-21,1) {cell};
+\pic[clock2] at (-21,0) {cell};
+\pic[clock3] at (-21,-1) {cell};
+\pic[clock3] at (-21,-2) {cell};
+\pic[clock0] at (-21,-3) {cell};
+\pic[clock0] at (-21,-4) {cell};
+\pic[clock1] at (-21,-5) {cell};
+
+
+\pic(A3)[input] at (-37,6) {cell};
+\node[above,scale=3] at (A3-north) {A3};
+\pic[clock0] at (-37,5) {cell};
+\pic[clock0] at (-37,4) {cell};
+\pic[clock1] at (-37,3) {cell};
+\pic[clock1] at (-37,2) {cell};
+\pic[clock2] at (-37,1) {cell};
+\pic[clock2] at (-37,0) {cell};
+\pic[clock3] at (-37,-1) {cell};
+\pic[clock3] at (-37,-2) {cell};
+\pic[clock0] at (-37,-3) {cell};
+\pic[clock0] at (-37,-4) {cell};
+\pic[clock1] at (-37,-5) {cell};
+\pic[clock1] at (-37,-6) {cell};
+\pic[clock2] at (-37,-7) {cell};
+\pic[clock2] at (-37,-8) {cell};
+\pic[clock3] at (-37,-9) {cell};
+\pic[clock3] at (-37,-10) {cell};
+\pic[clock0] at (-37,-11) {cell};
+
+
+\pic(B3)[input] at (-34,6) {cell};
+\node[above,scale=3] at (B3-north) {B3};
+\pic[clock0] at (-34,5) {cell};
+\pic[clock0] at (-34,4) {cell};
+\pic[clock1] at (-34,3) {cell};
+\pic[clock1] at (-34,2) {cell};
+\pic[clock2] at (-34,1) {cell};
+\pic[clock2] at (-34,0) {cell};
+\pic[clock3] at (-34,-1) {cell};
+\pic[clock3] at (-34,-2) {cell};
+\pic[clock0] at (-34,-3) {cell};
+\pic[clock0] at (-34,-4) {cell};
+\pic[clock1] at (-34,-5) {cell};
+\pic[clock1] at (-34,-6) {cell};
+\pic[clock2] at (-34,-7) {cell};
+\pic[clock2] at (-34,-8) {cell};
+\pic[clock3] at (-34,-9) {cell};
+\pic[clock3] at (-34,-10) {cell};
+\pic[clock0] at (-34,-11) {cell};
+
+\end{scope}
+
+\end{tikzpicture}
+
+
+\end{document}

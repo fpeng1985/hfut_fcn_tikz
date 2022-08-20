@@ -1,0 +1,59 @@
+\documentclass[preview,border=0mm,convert={convertexe={magick},outext=.ps}]{standalone}
+\usepackage[dvipdfm]{geometry}
+%graphics
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, calc, through, shadows}
+\usepackage[caption=false,font=footnotesize]{subfig}
+
+
+\begin{document}
+\definecolor{trait-color}{RGB}{170,198,231}
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}[
+trait/.style={ rectangle, draw=black, rounded corners=2pt, fill=trait-color, drop shadow, text centered, anchor=north, text=black, text width=7cm, minimum width=3.5cm, minimum height=0.7cm},
+myarrow/.style={->, >=open triangle 91, thick},
+line/.style={-, thick},
+node distance =2cm,
+transform shape,
+scale=0.45,
+] 
+\node (Simulation)[trait, rectangle split, rectangle split parts=3]
+    {
+        \textbf{Simulation}
+        \nodepart{second} {circuit information (cell coordinates, time zone)\newline algorithm parameters}
+        \nodepart{third} {the common stages of all kind of simulation}
+    };
+\node (Bistable)[trait, rectangle split, rectangle split parts=3]
+    at ($(Simulation.south)+(220:1.5)+(-2.6,0)$)
+    {
+        \textbf{Bistable Model}
+        \nodepart{second} {no extra data}
+        \nodepart{third}{solve the iterative equation in bistable algorithm}
+    };
+\node (Coherence)[trait, rectangle split, rectangle split parts=3]
+    at ($(Simulation.south)+(320:1.5)+(2.6,0)$)
+    {
+        \textbf{Coherence Vector Model}
+        \nodepart{second} {coherence vector $[\lambda_x, \lambda_y, \lambda_z]$ and steady state coherence vector $[\lambda_x^ss, \lambda_y^ss, \lambda_z^ss]$}
+        \nodepart{third}{solve the differential equation in coherence vector algorithm}
+    };
+    
+\draw[myarrow] (Bistable.north)  -- ++(0,0.4) -| (Simulation.south);
+\draw[myarrow] (Coherence.north) -- ++(0,0.4) -| (Simulation.south);
+
+\node (Energy)[trait, rectangle split, rectangle split parts=3]
+    at ($(Coherence.south)+(0,-0.6)$)
+    {
+        \textbf{QCADesigner-E's Model}
+        \nodepart{second}\small{energy related data}
+        \nodepart{third}\small{energy computation algorithm}
+    
+    };
+    
+\draw[myarrow] (Energy.north) -- (Coherence.south);
+
+\end{tikzpicture}
+\end{figure}
+\end{document}

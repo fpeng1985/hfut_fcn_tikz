@@ -1,0 +1,54 @@
+\documentclass[preview]{standalone}
+\usepackage{ctex}
+%graphics
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, calc, through}
+\usepackage[caption=false,font=footnotesize]{subfig}
+
+\begin{document}
+ 
+
+%\definecolor{nml-north-color}{HTML}{6666FF}
+%\definecolor{nml-south-color}{HTML}{FF6666}
+\definecolor{nml-north-color}{gray}{0.8}
+\definecolor{nml-south-color}{gray}{0.2}
+\begin{figure}[!t]
+\centering
+
+
+\subfloat[NML 元胞]{
+\begin{tikzpicture}[scale=0.2]
+\shade[draw=gray,thick,top color=nml-north-color,bottom color=nml-south-color,middle color=white] (-2.5,-5) rectangle (2.5,5);
+\draw[->, line width=2pt] (0,-4.5) -- (0, 4.5);
+\node at (0, -6) {逻辑`1'};
+
+\shade[draw=gray,thick,top color=nml-south-color,bottom color=nml-north-color,middle color=white] (-11.5,-5) rectangle (-6.5,5);
+\draw[->, line width=2pt] (-9,4.5) -- (-9, -4.5);
+\node at (-9, -6) {逻辑`0'};
+
+\shade[draw=gray,thick,left color=nml-south-color,right color=nml-north-color,middle color=white] (6.5,-5) rectangle (11.5,5);
+\draw[->, line width=2pt] (7,0) -- (11, 0);
+\node at (9, -6) {逻辑`null'};
+\end{tikzpicture}}
+
+\subfloat[纳米磁畴的耦合性]{%[Nano Magnet Coupling]{
+\begin{tikzpicture}[scale=0.2]
+
+\shade[draw=gray,thick,top color=nml-north-color,bottom color=nml-south-color,middle color=white] (-2.5,-5) rectangle (2.5,5);
+\draw[->, line width=2pt] (0,-4.5) -- (0, 4.5);
+\shade[draw=gray,thick,top color=nml-south-color,bottom color=nml-north-color,middle color=white] (-10.5,-5) rectangle (-5.5,5);
+\draw[->, line width=2pt] (-8,4.5) -- (-8, -4.5);
+\node at (-4, -6) {反铁磁性耦合}; %{Antiferromagnetic Coupling};
+
+\shade[draw=gray,thick,left color=nml-south-color,right color=nml-north-color,middle color=white] (9,-2.5) rectangle (19,2.5);
+\draw[->, line width=2pt] (9.5,0) -- (18.5, 0);
+\shade[draw=gray,thick,left color=nml-south-color,right color=nml-north-color,middle color=white] (22,-2.5) rectangle (32,2.5);
+\draw[->, line width=2pt] (22.5,0) -- (31.5, 0);
+\node at (20.5, -6) {铁磁性耦合}; %{Ferromagnetic Coupling};
+
+\end{tikzpicture}}
+
+\end{figure}
+
+\end{document}

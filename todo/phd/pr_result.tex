@@ -1,0 +1,65 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{arrows.meta,calc}
+
+\colorlet{tile_color_1}{lightgray!20}
+\colorlet{tile_color_2}{lightgray!50}
+\colorlet{tile_color_3}{lightgray}
+\colorlet{tile_color_4}{gray}
+\def\sz{1cm}
+\usetikzlibrary{math}
+\tikzmath{
+	%USE Clocking Scheme
+	function use_val(\x,\y){
+		return (mod(\y,2)!=0) ? ((mod(\y+1,4)!=0)?(1+mod(\x+1,4)):(1+mod(\x+3,4))):((mod(\y,4)==0)?(4-mod(\x+3,4)):(4-mod(\x+1,4)));
+	};
+	%
+	function use(\row, \col) {
+		\row = \row-1;
+		\col = \col-1;
+		int \i, \j, \c; 
+		for \i in {0,...,\row}{
+			for \j in {0,...,\col}{
+				\c = use_val(\j, \i);
+				{ \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
+			};
+		};
+	};
+}
+\begin{document}
+   
+\begin{tikzpicture}[
+x=\sz,
+y=\sz,
+minimum size=\sz,
+inner sep=0pt,
+outer sep=0pt,
+route/.style={->, >={Stealth[]},line width=1.4pt, black},
+v/.style={circle, draw, fill=white, line width=1pt, minimum size=\sz*.75, font=\large\boldmath},
+]
+
+\clip (0-.5,2-.5) rectangle ++(9,8);
+\tikzmath{
+	use(10,9);
+}
+\begin{scope}[yshift=2*\sz]
+\foreach \i/\x/\y in {1/5/4,2/3/6,3/3/2,4/2/5,5/1/4,6/5/0,7/4/3,8/7/2,9/8/3,10/4/7,11/6/5}
+	\node[v](\i)at(\x,\y){\i};
+	
+\draw[route](1)to(6);
+\draw[route](2.south east)|-++([yshift=-5pt]4,-1)--(8.north east);
+\draw[route](3)-|++(-1,1)--(7);
+\draw[route](3)--++(0,-1)-|(6.north west);
+\draw[route](4)--++(1,0)|-(7.north west);
+\draw[route](5)-|++([yshift=-2pt]-1,1.5)-|(10);
+\draw[route](6)-|++(-1,1.2)-|(9);
+\draw[route](7.north east)to(10.south east);
+\draw[route](7)-|(8);
+\draw[route](8.south west)-|(11.south west);
+\draw[route](8)--++(-1,0)|-(9.south west);
+\draw[route](10)--++(1,0)|-(11);
+\end{scope}
+
+
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,54 @@
+\documentclass[tikz]{standalone}
+\usepackage{ctex}
+\usepackage{listings}
+\usepackage{xcolor}
+\colorlet{tile_color_1}{lightgray!20}
+\colorlet{tile_color_2}{lightgray!50}
+\colorlet{tile_color_3}{lightgray}
+\colorlet{tile_color_4}{gray}
+\def\sz{2cm}
+\usetikzlibrary{math}
+\tikzmath{
+	%USE Clocking Scheme
+	function use_val(\x,\y){
+		return (mod(\y,2)!=0) ? ((mod(\y+1,4)!=0)?(1+mod(\x+1,4)):(1+mod(\x+3,4))):((mod(\y,4)==0)?(4-mod(\x+3,4)):(4-mod(\x+1,4)));
+	};
+	%
+	function use(\row, \col) {
+		\row = \row-1;
+		\col = \col-1;
+		int \i, \j, \c; 
+		for \i in {0,...,\row}{
+			for \j in {0,...,\col}{
+				\c = use_val(\j, \i);
+				{ \path (\j, \i) {node(\j\i)[fill=tile_color_\c]{}}; };
+			};
+		};
+	};
+}
+
+
+\begin{document}
+\begin{tikzpicture}[
+	x=\sz,
+	y=\sz,
+	minimum size=\sz,
+	inner sep=0pt,
+	outer sep=0pt,
+	]
+	\tikzmath{
+		use(4,4);
+	}
+	\node[draw,thick,text width=\sz,align=flush center,font=\tiny,pin={[minimum size=2pt]above:{格子}}] at(1,2){坐标=(1,2)\\时钟=2\\大小=$5\times 5$\\容量=6};
+	\node[font=\footnotesize, align=flush center,label=above:{USE时钟方案}] at(5.7,1.5){%
+		\begin{lstlisting}
+function use(x,y) {
+  return (y%2!=0) ?
+	((y+1)%4!=0)?((x+1)%4+1):((x+3)%4+1)
+	(y%4==0)?(4-(x+3)%4):(4-(x+1)%4)
+}
+		\end{lstlisting}
+	};
+
+\end{tikzpicture}
+\end{document}

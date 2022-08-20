@@ -1,0 +1,67 @@
+\documentclass{article}
+%graphics
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,math}
+
+\usepackage{subfig}
+
+\begin{document}
+
+\tikzstyle{c}=[rectangle, fill, text=black, minimum size=1cm,rotate=-45]
+\tikzstyle{c1}=[lightgray!20, c]
+\tikzstyle{c2}=[lightgray!50, c] 
+\tikzstyle{c3}=[lightgray, c]
+\tikzstyle{c4}=[gray, c]
+\tikzstyle{clabel}=[rectangle, minimum size=0.2cm, text=black]
+\tikzstyle{croute}=[-{Stealth[inset=0pt]}, thick, draw=black!75]
+
+\begin{figure}[!t]%
+
+\subfloat[]{
+\begin{tikzpicture}[rotate=-45]
+\tikzmath{
+function cfe(\x,\y){
+    return ((mod(\y,2)!=0) ? ((mod(\x,2)!=0 ? 4 : 1) :((mod(\x,2) !=0)? 3 :2));
+};
+%
+int \i, \j, \c; 
+for \i in {0,1,2,3}{
+    for \j in {0,1,2,3}{
+        \c = cfe(\i,\j);
+        {\node[c\c] at(\i,\j){} node(\i\j)[clabel]at(\i,\j){\c};};
+    };
+};
+}
+
+\draw[croute] (01) -- (00);
+\draw[croute] (00) -- (10);
+\draw[croute] (10) -- (11);
+\draw[croute] (20) -- (10);
+\draw[croute] (11) -- (01);
+\draw[croute] (31) -- (21);
+\draw[croute] (20) -- (30);
+\draw[croute] (11) -- (21);
+\draw[croute] (11) -- (01);
+\draw[croute] (21) -- (20);
+\draw[croute] (30) -- (31);
+
+\draw[croute] (01) -- (02);
+\draw[croute] (03) -- (02);
+\draw[croute] (12) -- (13);
+\draw[croute] (12) -- (11);
+\draw[croute] (23) -- (22);
+\draw[croute] (21) -- (22);
+\draw[croute] (32) -- (33);
+\draw[croute] (32) -- (31);
+\draw[croute] (02) -- (12);
+\draw[croute] (22) -- (12);
+\draw[croute] (22) -- (32);
+\draw[croute] (13) -- (03);
+\draw[croute] (13) -- (23);
+\draw[croute] (33) -- (23);
+
+\end{tikzpicture}
+}
+
+\end{figure}
+\end{document}

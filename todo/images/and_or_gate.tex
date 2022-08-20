@@ -1,0 +1,91 @@
+\documentclass[preview,border=4mm,convert={convertexe={magick},outext=.ps}]{standalone}
+
+%graphics
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, calc, through}
+\usepackage[caption=false,font=footnotesize]{subfig}
+
+\colorlet{dot-color}{black!80}
+\tikzset{
+    pics/cell/.style = {
+        code = {%
+        \coordinate (-center) at (0,0);
+        
+        \fill +(-0.45,-0.45) coordinate(-sw) 
+           -- +(-0.45, 0.45) coordinate(-nw)
+           -- +( 0.45, 0.45) coordinate(-ne)
+           -- +( 0.45,-0.45) coordinate(-se)
+           -- cycle;
+        \coordinate (-swo) at ($ (-center)!0.5!(-sw) $);
+        \coordinate (-nwo) at ($ (-center)!0.5!(-nw) $);
+        \coordinate (-neo) at ($ (-center)!0.5!(-ne) $);
+        \coordinate (-seo) at ($ (-center)!0.5!(-se) $);
+        
+        \coordinate (-south) at ($ (-sw)!.5!(-se) $);
+        \coordinate (-north) at ($ (-nw)!.5!(-ne) $);
+        \coordinate (-west)  at ($ (-sw)!.5!(-nw) $);
+        \coordinate (-east)  at ($ (-se)!.5!(-ne) $);
+        
+        \fill[white] (-swo) let \p1=($ (-center)!.5!(-swo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-nwo) let \p1=($ (-center)!.5!(-nwo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-neo) let \p1=($ (-center)!.5!(-neo) $) in circle ({veclen(\x1,\y1)});
+        \fill[white] (-seo) let \p1=($ (-center)!.5!(-seo) $) in circle ({veclen(\x1,\y1)});
+        
+        \ifnum#1=1\relax
+            \fill[dot-color] (-swo) let \p1=($ (-center)!.32!(-swo) $) in circle ({veclen(\x1,\y1)});
+            \fill[dot-color] (-neo) let \p1=($ (-center)!.32!(-neo) $) in circle ({veclen(\x1,\y1)});
+        \else
+            \ifnum#1=-1\relax
+                \fill[dot-color] (-nwo) let \p1=($ (-center)!.32!(-nwo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-seo) let \p1=($ (-center)!.32!(-seo) $) in circle ({veclen(\x1,\y1)});
+            \else
+                \fill[dot-color] (-swo) let \p1=($ (-center)!.22!(-swo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-nwo) let \p1=($ (-center)!.22!(-nwo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-neo) let \p1=($ (-center)!.22!(-neo) $) in circle ({veclen(\x1,\y1)});
+                \fill[dot-color] (-seo) let \p1=($ (-center)!.22!(-seo) $) in circle ({veclen(\x1,\y1)});
+            \fi
+        \fi
+        }
+    },
+    pics/cell/.default={0}
+}
+
+%from Torres
+\definecolor{clock0}{HTML}{008000}
+\definecolor{clock1}{HTML}{800080}
+\definecolor{clock2}{HTML}{008080}
+\definecolor{clock3}{HTML}{F2F2F2}
+\definecolor{input}{HTML}{3663B2}
+\definecolor{output}{HTML}{D47000}
+\definecolor{fixed}{HTML}{000000}
+
+
+\begin{document}
+
+\begin{figure}[!t]
+\centering
+\subfloat[AND gate]{
+  \begin{tikzpicture}
+    \pic (c1)[fixed]   at (0,0) {cell=-1};
+    \pic [input]   at (1,1) {cell=1};
+    \pic [input]   at (1,-1) {cell=1};
+    \pic [clock0] at (1,0) {cell=1};
+    \pic [clock0] at (2,0) {cell=1};
+    \node[left,text=fixed] at (c1-west) {\scriptsize $-1.00$};
+  \end{tikzpicture}
+}
+\hfil
+\subfloat[OR gate]{
+  \begin{tikzpicture}
+    \pic (c1) [fixed]   at (0,0)      {cell=1};
+    \pic[clock0] at (1,0)    {cell=1};
+    \pic[input]   at (1,1)  {cell=-1};
+    \pic[input]   at (1,-1) {cell=1};
+    \pic[clock0] at (2,0)      {cell=1};
+    \node[left,text=fixed] at (c1-west) {\scriptsize $1.00$};
+  \end{tikzpicture}
+}
+\end{figure}
+
+\end{document}

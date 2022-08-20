@@ -1,0 +1,103 @@
+\documentclass[preview]{standalone}
+%graphics
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,math}
+
+\usepackage{subfig}
+
+\begin{document}
+\definecolor{clock1}{RGB}{89,89,91}
+\definecolor{clock2}{RGB}{129,130,132}
+\definecolor{clock3}{RGB}{210,210,212}
+\definecolor{clock4}{RGB}{168,169,173}
+\definecolor{input}{RGB}{230,230,230}
+\definecolor{output}{RGB}{40,40,40}
+\definecolor{fixed}{HTML}{000000}
+
+  \tikzstyle{c}=[rectangle, fill, text=black, minimum size=1cm]
+  \tikzstyle{c1}=[clock1, c]
+  \tikzstyle{c2}=[clock2, c] 
+  \tikzstyle{c3}=[clock3, c]
+  \tikzstyle{c4}=[clock4, c]
+  \tikzstyle{clabel}=[rectangle, minimum size=0.2cm, text=black]
+  \tikzstyle{croute}=[-{Stealth[inset=0pt]}, thick, draw=black!75]
+  
+  \begin{figure}%
+  \centering
+    \subfloat[2DD]{
+      \begin{tikzpicture}[yscale=-1]
+        \tikzmath{
+          function tdd(\x,\y){
+            return (mod(\y, 2)!=0) ? 
+            ((mod(\y+1, 4)!=0)?(1+mod(\x+1, 4)):(1+mod(\x+3, 4))) :
+            ((mod(\y, 4)==0)?(1+mod(\x, 4)):(1+mod(\x+2, 4)));
+          };
+          %
+          int \i, \j, \c; 
+          for \i in {0,1,2,3}{
+            for \j in {0,1,2,3}{
+              \c = tdd(\i,\j);
+              {\node[c\c] at(\i,\j){} node(\i\j)[clabel]at(\i,\j){\c};};
+            };
+          };
+          %
+          int \rt, \up;
+          for \i in {0,1,2,3}{
+            for \j in {0,1,2,3}{
+              if \i<3 then {
+                \rt = \i + 1;
+                {\draw[croute] (\i\j) -- (\rt\j);};
+              };
+              if \j<3 then {
+                \up = \j + 1;
+                {\draw[croute] (\i\j) -- (\i\up);};
+              };
+            };
+          };
+        }
+      \end{tikzpicture}
+    }
+    \hfil
+    \subfloat[USE]{
+      \begin{tikzpicture}[yscale=-1]
+        \tikzmath{
+          function use(\x,\y){
+            return (mod(\y,2)!=0) ? 
+            ((mod(\y+1,4)!=0)?(4-mod(\x,4)):(4-mod(\x+2,4))) :
+            ((mod(\y,4)==0)?(1+mod(\x,4)):(1+mod(\x+2,4)));
+          };
+          %
+          int \i, \j, \c; 
+          for \i in {0,1,2,3}{
+            for \j in {0,1,2,3}{
+              \c = use(\i,\j);
+              {\node[c\c] at(\i,\j){} node(\i\j)[clabel]at(\i,\j){\c};};
+            };
+          };
+          %
+          int \rt, \up;
+          for \i in {0,1,2,3}{
+            for \j in {0,1,2,3}{
+              if \i<3 then {
+                \rt = \i + 1;
+                if mod(\j,2) then {
+                  {\draw[croute] (\rt\j) -- (\i\j);};
+                } else {
+                  {\draw[croute] (\i\j) -- (\rt\j);};
+                };
+              };
+              if \j<3 then {
+                \up = \j + 1;
+                if mod(\i,2) then {
+                  {\draw[croute] (\i\j) -- (\i\up);};
+                } else {
+                  {\draw[croute] (\i\up) -- (\i\j);};
+                };
+              };
+            };
+          };
+        }
+      \end{tikzpicture}
+    }
+  \end{figure}
+\end{document}
